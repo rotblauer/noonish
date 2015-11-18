@@ -1,0 +1,35 @@
+<!-- <div class="" style="height: 100px;"></div> -->
+<!-- <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor odio quam recusandae vitae sapiente iusto, debitis quasi ex, quos, inventore molestias earum accusamus quidem ducimus placeat soluta. Repellat, reiciendis, corporis.</h1> -->
+
+
+
+
+<ion-view view-title="main module">
+  <!-- do you want padding? -->
+  <ion-content >
+
+    <!-- content goes here -->
+    <div class="padding">
+    <h1>{{ testes }}</h1>
+
+
+    <ui-gmap-google-map center='map.center' zoom='map.zoom' options="map.options" styles="map.styles"></ui-gmap-google-map>
+
+    <p class="type type-positive fat fat-head">
+      <b>Longitude: {{ map.center.longitude | number:3 }}</b>
+      <span style="float: right;">Latitude: {{ map.center.latitude | number:3 }}</span>
+    </p>
+
+    <h1>mean: {{ meanTime | date: 'HH:mm:ss a' }}</h1>
+    <h1>true: {{ trueTime | date: 'HH:mm:ss a' }}</h1>
+    <h1>{{ clock | date: 'HH:mm:ss a' }}</h1>
+
+
+
+
+
+
+    </div>
+
+  </ion-content>
+</ion-view>

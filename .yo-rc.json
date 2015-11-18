@@ -1,0 +1,29 @@
+{
+  "generator-m-ionic": {
+    "answers": {
+      "appName": "Noon",
+      "appId": "com.rotblauer.noon",
+      "ionicCss": false,
+      "bowerPackages": [
+        "angular-dynamic-locale#~0.1.27",
+        "angular-translate#~2.8.1",
+        "angular-translate-loader-static-files#~2.8.1",
+        "angular-localForage#~1.2.3"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "plugins": [
+        "cordova-plugin-device",
+        "cordova-plugin-dialogs",
+        "cordova-plugin-inappbrowser",
+        "com.ionic.keyboard",
+        "cordova-plugin-network-information",
+        "cordova-plugin-splashscreen",
+        "cordova-plugin-statusbar"
+      ],
+      "appModule": "Noon"
+    }
+  }
+}
