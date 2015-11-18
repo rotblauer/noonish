@@ -26,7 +26,17 @@ angular.module('main', [
           controller: 'TimerCtrl'
         }
       }
-    });
+    })
+    .state('main.sunny', {
+      url: '/sunny',
+      views: {
+        'pageContent': {
+          templateUrl: 'main/templates/sunny.html',
+          controller: 'SunnyCtrl'
+        }
+      }
+    })
+    ;
     // .state('realTime', {
     //   url: '/real-time',
     //   templateUrl: '/main/templates/timer.html',

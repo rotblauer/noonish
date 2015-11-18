@@ -1,6 +1,6 @@
 'use strict';
 angular.module('main')
-.controller('TimerCtrl', function ($scope, $log, $timeout, $cordovaGeolocation, TimeFactory) {
+.controller('TimerCtrl', function ($scope, $log, $timeout, $cordovaGeolocation, TimeFactory, RiserFactory) {
 
     // Initialize variables.
     $scope.lat;
@@ -8,6 +8,7 @@ angular.module('main')
     $scope.map;
     $scope.accuracy ;
     $scope.error = '';
+
 
     // Initialize result function in case of error.
     $scope.showResult = function() {
@@ -17,33 +18,40 @@ angular.module('main')
     $scope.initializeMap = function (position) {
 
       var styleArray = [
-        {
-          featureType: "all",
-          stylers: [
-            { saturation: -80 }
-          ]
-        },{
-          featureType: "road.arterial",
-          elementType: "geometry",
-          stylers: [
-            { hue: "#00ffee" },
-            { saturation: -50 }
-          ]
-        },{
-          featureType: "road.highway",
-          elementType: "geometry",
-          stylers: [
-            // { hue: "#00ffee" },
-            { saturation: -50 }
-          ]
-        },{
-          featureType: "poi.business",
-          elementType: "labels",
-          stylers: [
-            { visibility: "off" }
-          ]
-        }
-      ];
+  {
+    "featureType": "road.highway",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },{
+    "featureType": "road.arterial",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },{
+    "featureType": "road.local",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },{
+    "featureType": "administrative.locality",
+    "stylers": [
+      { "visibility": "simplified" }
+    ]
+  },{
+    "featureType": "water",
+    "stylers": [
+      { "color": "#87d5dd" }
+    ]
+  },{
+    "featureType": "landscape.man_made",
+    "stylers": [
+      { "saturation": 29 },
+      { "lightness": 17 },
+      { "gamma": 0.81 }
+    ]
+  }
+];
 
       // Create the Google Map
       $scope.map = {
@@ -77,6 +85,8 @@ angular.module('main')
       $scope.initializeMap(position);
       $scope.meanTimer(position); // get mean local
       $scope.trueTimer(position); // get true local
+      $scope.diffMeanClock = RiserFactory.timeString(TimeFactory.diffMeanClock($scope.lng));
+      $scope.diffTrueClock = RiserFactory.timeString(TimeFactory.diffTrueClock($scope.lng));
     };
 
     $scope.showError = function(error) {

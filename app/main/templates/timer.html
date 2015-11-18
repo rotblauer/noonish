@@ -4,7 +4,7 @@
 
 
 
-<ion-view view-title="main module">
+<ion-view cache-view="false" view-title="Real Local Times">
   <!-- do you want padding? -->
   <ion-content >
 
@@ -16,20 +16,45 @@
     <ui-gmap-google-map center='map.center' zoom='map.zoom' options="map.options" styles="map.styles"></ui-gmap-google-map>
 
     <p class="type type-positive fat fat-head">
-      <b>Longitude: {{ map.center.longitude | number:3 }}</b>
+      <span>Longitude: {{ map.center.longitude | number:3 }}</span>
       <span style="float: right;">Latitude: {{ map.center.latitude | number:3 }}</span>
     </p>
 
-    <h1>mean: {{ meanTime | date: 'HH:mm:ss a' }}</h1>
-    <h1>true: {{ trueTime | date: 'HH:mm:ss a' }}</h1>
-    <h1>{{ clock | date: 'HH:mm:ss a' }}</h1>
+    <div class="row">
 
+      <div class="col col-50">
+        <h5>
+          Local mean time
+        </h5>
+        <h2 class="type">{{ meanTime | date: 'HH:mm:ss' }}</h2>
+        <h2 class="type type-calm">
+          {{ diffMeanClock  }}
+        </h2>
 
+      </div>
 
-
-
+      <div class="col col-50" style="text-align: right;">
+        <h5>
+          True solar time
+        </h5>
+        <h2 class="type">{{ trueTime | date: 'HH:mm:ss' }}</h2>
+        <h2 class="type type-calm">
+          {{ diffTrueClock  }}
+        </h2>
+      </div>
 
     </div>
+
+    <div class="row">
+
+      <div class="col col-100 text-center">
+        <h5 class="type type-muted">
+          {{ clock | date: 'HH:mm:ss a' }}
+        </h5>
+      </div>
+
+    </div>
+
 
   </ion-content>
 </ion-view>

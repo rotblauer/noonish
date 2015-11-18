@@ -1,0 +1,80 @@
+<ion-view cache-view="false" view-title="Solar Events">
+  <!-- do you want padding? -->
+  <ion-content class="padding">
+
+    <div class="row" ng-if="error">
+
+      <div class="col col-100">
+        <h5 class="type type-assertive" ng-if="error">
+          Error: {{ error }}
+        </h5>
+      </div>
+    </div>
+    <div class="row">
+
+      <div class="col col-100">
+
+        <p class="type type-muted">Sunrise</p>
+        <h1 class="type type-royal skinny skinny-head">
+          <i class="icon ion-contrast"></i>
+          {{ sunrise }}
+        </h1>
+
+        <p class="type type-muted">Solar Noon</p>
+        <h1 class="type type-energized skinny skinny-head">
+          <i class="icon ion-record"></i>
+          {{ noon }}
+        </h1>
+
+        <p class="type type-muted">Sunset</p>
+        <h1 class="type type-calm skinny skinny-head">
+          <i class="icon ion-contrast"></i>
+          {{ sunset }}
+        </h1>
+      </div>
+
+    </div>
+
+    <div class="list">
+      <li class="item item-no-border item-toggle">
+         Daylight Savings Time On/Off
+         <label class="toggle toggle-assertive">
+           <input type="checkbox" ng-model="x.dst" ng-click="getLocation()">
+           <div class="track">
+             <div class="handle"></div>
+           </div>
+         </label>
+      </li>
+    </div>
+
+    <div class="row">
+      <div class="col col-100">
+
+        <h5>Equation of time</h5>
+        <p>scope.eot = {{ eot }}</p>
+        <p>eot formatted by secondsToDate filter = {{ eot | secondsToDateTime | date: 'mm:ss' }}</p>
+        <p>scope.eotf (TimeFactory.formatEOT) = {{ eotf }}</p>
+        <p>scope.eotff (RiserFactory.timeString(TimeFactory.equationOfTime()) = {{ eotff }}</p>
+
+        <h5>JD</h5>
+        <p>scope.jDay (TimeFactory.cardinalDay) = {{ jDay }}</p>
+        <p>scope.JD (RiserFactory.getJD) = {{ JD }}</p>
+        <p>scope.timeJulianCent = {{ timeJulianCent }}</p>
+
+        <h5>Dates</h5>
+        <p>day = {{ day }}</p>
+        <p>month = {{ month }}</p>
+        <p>year = {{ year }}</p>
+
+        <h5>Noon</h5>
+        <p>scope.noon = {{ noon }}</p>
+
+        <h5>DST</h5>
+        <p>scope.x.dst = {{ x.dst }}</p>
+
+      </div>
+    </div>
+
+
+  </ion-content>
+</ion-view>

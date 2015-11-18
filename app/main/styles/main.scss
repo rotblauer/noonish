@@ -5,14 +5,23 @@ in ionic's _variables.scss file.
 For example, you might change some of the default colors:
 */
 
+
+
 $light:                           #fff !default;
 $stable:                          #f8f8f8 !default;
 $positive:                        #4a87ee !default;
-$calm:                            #43cee6 !default;
 $balanced:                        #66cc33 !default;
 $energized:                       #f0b840 !default;
 $assertive:                       #ef4e3a !default;
-$royal:                           #8a6de9 !default;
+
+$sunrise: lighten($energized, 20%);
+$sunset: lighten($assertive, 20%);
+
+// $royal:                           #8a6de9 !default;
+// $calm:                            #43cee6 !default;
+$royal:                           $sunrise !default;
+$calm:                            $sunset !default;
+
 $dark:                            #444 !default;
 
 // The path for our ionicons font files, relative to the built & temporary main.css
@@ -20,6 +29,13 @@ $ionicons-font-path: "../assets/fonts" !default;
 
 // Include all of Ionic
 @import "../../bower_components/ionic/scss/ionic";
+
+
+.item {
+  &.item-no-border {
+    border: none;
+  }
+}
 
 .fat {
   &.fat-head {
@@ -29,17 +45,22 @@ $ionicons-font-path: "../assets/fonts" !default;
     margin-bottom: 10px;
   }
 }
+.skinny {
+  &.skinny-head {
+    margin-top: -10px;
+  }
+}
 
 .angular-google-map {
-  height: 300px;
+  height: 250px;
   width: 100%;
 }
 .angular-google-map-container {
-  height: 300px;
+  height: 250px;
   width: 100%;
-  -webkit-box-shadow: 0px 4px 44px -14px rgba(102,102,102,1);
-  -moz-box-shadow: 0px 4px 44px -14px rgba(102,102,102,1);
-  box-shadow: 0px 4px 44px -14px rgba(102,102,102,1);
+  // -webkit-box-shadow: 0px 4px 44px -14px rgba(102,102,102,1);
+  // -moz-box-shadow: 0px 4px 44px -14px rgba(102,102,102,1);
+  // box-shadow: 0px 4px 44px -14px rgba(102,102,102,1);
 }
 
 .type {
@@ -64,6 +85,12 @@ $ionicons-font-path: "../assets/fonts" !default;
   }
   &.type-assertive {
     color: $assertive;
+  }
+  &.type-energized {
+    color: $energized;
+  }
+  &.type-royal {
+    color: $royal;
   }
   &.type-calm {
     color: $calm;
