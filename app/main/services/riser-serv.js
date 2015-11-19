@@ -495,7 +495,7 @@ angular.module('main')
   function calcSolNoon(jd, longitude, timezone, dst)
   {
     $log.log('calcSolNoon working');
-    $log.log('arguments', jd, longitude, timezone, dst);
+    $log.log('calcSolNoon args of 4', jd, longitude, timezone, dst);
     var tnoon = calcTimeJulianCent(jd - longitude/360.0);
     var eqTime = calcEquationOfTime(tnoon);
     var solNoonOffset = 720.0 - (longitude * 4) - eqTime; // in minutes
