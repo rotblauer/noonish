@@ -12,4 +12,10 @@ angular.module('main')
       v=input%100;
       return input+(s[(v-20)%10]||s[v]||s[0]);
     }
-  });;
+  });
+  // .directive('mapper', function ($window) {
+  //     return function (scope, element, attrs) {
+  //       var height = ($window).height();
+  //       element.height(height);
+  //     };
+  // });
