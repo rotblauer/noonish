@@ -1,6 +1,6 @@
 'use strict';
 angular.module('main')
-.controller('TimerCtrl', function ($scope, $log, $timeout, $cordovaGeolocation, TimeFactory, RiserFactory) {
+.controller('TimerCtrl', function ($scope, $log, $timeout, $cordovaGeolocation, TimeFactory, RiserFactory, GeolocationFactory) {
 
     // Initialize variables.
     $scope.lat;
@@ -8,6 +8,7 @@ angular.module('main')
     $scope.map;
     $scope.accuracy ;
     $scope.error = '';
+    var n = 0;
 
 
     // Initialize result function in case of error.
@@ -78,6 +79,7 @@ angular.module('main')
     };
 
     $scope.handlePosition = function(position) {
+
       // Set location variables.
       $scope.lat = position.coords.latitude;
       $scope.lng = position.coords.longitude;
@@ -87,6 +89,12 @@ angular.module('main')
       $scope.trueTimer(position); // get true local
       $scope.diffMeanClock = RiserFactory.timeString(TimeFactory.diffMeanClock($scope.lng));
       $scope.diffTrueClock = RiserFactory.timeString(TimeFactory.diffTrueClock($scope.lng));
+
+      if ( n === 0 ) {
+        setCity(position);
+      }
+
+      n += 1; // index counter
     };
 
     $scope.showError = function(error) {
@@ -108,31 +116,34 @@ angular.module('main')
       // $scope.$apply();
     };
 
-    // called through button
-    $scope.getLocation = function() {
-      if ($cordovaGeolocation) { // If the plugin is there and working
-        var posOptions = {
-          timeout: 10000,
-          enableHighAccuracy: true
-        };
-        $cordovaGeolocation.getCurrentPosition(posOptions)
-          .then(
-            $scope.handlePosition, // success
-            $scope.showError // error
-          );
-      } else { // otherwise shi
-        $scope.error = 'Geolocation is not supported by this browser.';
-      }
+    function setCity (position) {
+      GeolocationFactory.getNearByCity($scope.lat, $scope.lng)
+        .then(function (data) {
+          $log.log('nearByCity data', data);
+          $scope.nearestCity = data.data.results[0]['formatted_address'];
+        });
+    }
+
+    $scope.getAndUpdateLocation = function () {
+      GeolocationFactory.getLocation()
+        .then($scope.handlePosition, $scope.showError);
     };
 
-    $scope.getLocation();
+    // function initLocation () {
+    //   GeolocationFactory.getLocation()
+    //     .then(setCity, $scope.showError);
+    //   $scope.getAndUpdateLocation();
+    // }
+
+    // initLocation();
+
 
     var clockIt = function() {
       $scope.clock = new Date();
       // Set the clock time.
 
       // Update location.
-      $scope.getLocation();
+      $scope.getAndUpdateLocation();
       // Tick.
       $timeout(clockIt, 1000);
     };

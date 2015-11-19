@@ -19,7 +19,7 @@
     "space-before-blocks": [2, "always"],
     "space-before-function-paren": [0, "always"],
     "dot-location": [2, "property"],
-    "space-infix-ops": 2,
+    "space-infix-ops": 0,
     "key-spacing": [1, {"beforeColon": false, "afterColon": true}],
     "operator-linebreak": [1, "after"],
     "no-spaced-func": 1,

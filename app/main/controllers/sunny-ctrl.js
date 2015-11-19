@@ -1,6 +1,6 @@
 'use strict';
 angular.module('main')
-.controller('SunnyCtrl', function ($scope, $log, $cordovaGeolocation, TimeFactory, RiserFactory) {
+.controller('SunnyCtrl', function ($scope, $log, $cordovaGeolocation, TimeFactory, RiserFactory, GeolocationFactory) {
 
   $scope.jDay = TimeFactory.cardinalDay();
   $scope.eot = TimeFactory.equationOfTime();
@@ -16,7 +16,7 @@ angular.module('main')
 
   $scope.JD = RiserFactory.getJD($scope.day, $scope.month, $scope.year); // (day, month, year)
   $scope.timeJulianCent = RiserFactory.calcTimeJulianCent($scope.JD);
-
+  $scope.nearestCity;
 
 
   // $scope.dst = false;
@@ -53,6 +53,8 @@ angular.module('main')
     morning($scope.lat, $scope.lng, $scope.timezone);
     $scope.noon = RiserFactory.solarNoon($scope.JD, $scope.lng, $scope.timezone, $scope.x.dst);
     evening($scope.lat, $scope.lng, $scope.timezone);
+
+    setCity(position);
   };
 
 
@@ -73,27 +75,22 @@ angular.module('main')
       $scope.error = 'An unknown error occurred.';
       break;
     }
-    // $scope.$apply();
   };
 
+  function setCity (position) {
+    GeolocationFactory.getNearByCity($scope.lat, $scope.lng)
+      .then(function (data) {
+        $log.log('nearByCity data', data);
+        $scope.nearestCity = data.data.results[0]['formatted_address'];
+      });
+  }
 
-  // called through button
-  $scope.getLocation = function() {
-    if ($cordovaGeolocation) { // If the plugin is there and working
-      var posOptions = {
-        timeout: 10000,
-        enableHighAccuracy: true
-      };
-      $cordovaGeolocation.getCurrentPosition(posOptions)
-        .then(
-          $scope.handlePosition, // success
-          $scope.showError // error
-        );
-    } else { // otherwise shi
-      $scope.error = 'Geolocation is not supported by this browser.';
-    }
+  $scope.initLocation = function () {
+    GeolocationFactory.getLocation()
+      .then($scope.handlePosition, $scope.showError);
   };
 
-  $scope.getLocation();
+  $scope.initLocation();
+
 
 });
