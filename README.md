@@ -140,6 +140,7 @@ Livereloads your application when changing/adding/deleting files to immediately 
 
 #### File structure
 <pre>
+```
 └──  app/           - your application folder
 │   └──  bower_components/    - local installation of bower packages
 │   └──  main/                - ---main module---
@@ -177,6 +178,7 @@ Livereloads your application when changing/adding/deleting files to immediately 
 ├──  jenkins.sh     - shell script for jenkins continuous integration
 ├──  package.json   - node dependencies configuration
 ├──  README.md      - the generator's README.md
+```
 </pre>
 
 ## Testing

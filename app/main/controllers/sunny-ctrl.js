@@ -24,17 +24,17 @@ angular.module('main')
   $scope.year = d.getFullYear();
   $scope.JD = RiserFactory.getJD($scope.day, $scope.month, $scope.year); // (day, month, year)
 
-  function morning (lat, lng, tz) {
-    var lat = lat;
-    var lon = lng;
-    var tz = tz;
+  function morning (latt, lngg, tzz) {
+    var lat = latt;
+    var lon = lngg;
+    var tz = tzz;
     var dst = $scope.x.dst;
     $scope.sunrise = RiserFactory.calcSunriseSet(1, $scope.JD, lat, lon, tz, dst); // rise[1:morn, 0:eve], JD, latitude, longitude, timezone, dst
   }
-  function evening (lat, lng, tz) {
-    var lat = lat;
-    var lon = lng;
-    var tz = tz;
+  function evening (latt, lngg, tzz) {
+    var lat = latt;
+    var lon = lngg;
+    var tz = tzz;
     var dst = $scope.x.dst;
     $scope.sunset = RiserFactory.calcSunriseSet(0, $scope.JD, lat, lon, tz, dst); // rise[1:morn, 0:eve], JD, latitude, longitude, timezone, dst
   }

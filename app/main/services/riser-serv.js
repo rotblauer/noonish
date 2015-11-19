@@ -502,7 +502,7 @@ angular.module('main')
     var newt = calcTimeJulianCent(jd + solNoonOffset/1440.0);
     eqTime = calcEquationOfTime(newt);
     var solNoonLocal = 720 - (longitude * 4) - eqTime + (timezone*60.0); // in minutes
-    if (dst) { solNoonLocal += 60.0 };
+    if (dst) { solNoonLocal += 60.0 }
     while (solNoonLocal < 0.0) {
       solNoonLocal += 1440.0;
     }

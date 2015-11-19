@@ -14,11 +14,11 @@
     // formatting, spaces, operators
     "indent": [0, 0, {"SwitchCase": 1}],
     "quotes": [1, "single"],
-    "semi": [2, "always"],
-    "space-after-keywords": [2, "always"],
-    "space-before-blocks": [2, "always"],
+    "semi": [1, "always"],
+    "space-after-keywords": [1, "always"],
+    "space-before-blocks": [1, "always"],
     "space-before-function-paren": [0, "always"],
-    "dot-location": [2, "property"],
+    "dot-location": [1, "property"],
     "space-infix-ops": 0,
     "key-spacing": [1, {"beforeColon": false, "afterColon": true}],
     "operator-linebreak": [1, "after"],
@@ -26,20 +26,22 @@
     "comma-spacing": [1, {"before": false, "after": true}],
     "no-multiple-empty-lines": [1, {"max": 20}],
     "camelcase": [1, {"properties": "always"}],
+    "no-undef": 1,
+    "no-redeclare": 1,
 
     // coding style
-    "curly": 2,
-    "wrap-iife": [2, "inside"],
-    "eqeqeq": 2,
-    "no-use-before-define": [2, "nofunc"],
-    "no-unused-vars": 2,
-    "no-unexpected-multiline": 2,
-    "no-multi-str": 2,
+    "curly": 1,
+    "wrap-iife": [1, "inside"],
+    "eqeqeq": 1,
+    "no-use-before-define": [1, "nofunc"],
+    "no-unused-vars": 1,
+    "no-unexpected-multiline": 1,
+    "no-multi-str": 1,
     "no-irregular-whitespace": 0,
 
     // os/git options
-    "no-trailing-spaces": 2,
+    "no-trailing-spaces": 1,
     "linebreak-style": 0,
-    "eol-last": 2
+    "eol-last": 1
   }
 }
