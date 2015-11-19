@@ -10,6 +10,19 @@ angular.module('main')
     $scope.error = '';
     var n = 0;
 
+    $scope.x = {};
+    $scope.x.dst;
+
+    $scope.addressMode = true;
+
+    $scope.changeAddressMode = function () {
+      if ( $scope.addressMode ) {
+        $scope.addressMode = false;
+      } else {
+        $scope.addressMode = true;
+      }
+    }
+
 
     // Initialize result function in case of error.
     $scope.showResult = function() {
@@ -70,12 +83,12 @@ angular.module('main')
 
     $scope.meanTimer = function (position) {
       var lon = position.coords.longitude;
-      $scope.meanTime = TimeFactory.getMeanSolar(lon);
+      $scope.meanTime = TimeFactory.getMeanSolar(lon, $scope.x.dst);
     };
 
     $scope.trueTimer = function (position) {
       var lon = position.coords.longitude;
-      $scope.trueTime = TimeFactory.getTrueSolar(lon);
+      $scope.trueTime = TimeFactory.getTrueSolar(lon, $scope.x.dst);
     };
 
     $scope.handlePosition = function(position) {

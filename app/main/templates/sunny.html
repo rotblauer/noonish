@@ -14,7 +14,18 @@
 
       <div class="col col-100">
         <p class="type type-muted">
-          @&nbsp;{{ nearestCity }}</p>
+          <span ng-if="addressMode" ng-click="changeAddressMode()">
+            @&nbsp;{{ nearestCity }} <br>
+          </span>
+          <span ng-if="!addressMode" ng-click="changeAddressMode()">
+            <i class="icon ion-map"></i>&nbsp;
+            <i class="icon ion-android-more-vertical"></i>
+            {{ lat | number:3 }}
+            ,
+            <i class="icon ion-android-more-horizontal"></i>
+            {{ lng | number:3 }}
+          </span>
+        </p>
 
         <p class="type type-muted">Sunrise</p>
         <h1 class="type type-royal skinny skinny-head">
@@ -49,47 +60,6 @@
            </div>
          </label>
       </li>
-    </div>
-
-    <div class="row">
-      <div class="col col-100">
-
-        <p class="type type-muted">Equation of Time</p>
-        <h1 class="type type-positive skinny skinny-head">
-          <i class="icon ion-calculator"></i>
-          {{ eotff }} minutes
-        </h1>
-
-
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col col-100">
-
-        <h5>Equation of time</h5>
-        <p>scope.eot = {{ eot }}</p>
-        <p>eot formatted by secondsToDate filter = {{ eot | secondsToDateTime | date: 'mm:ss' }}</p>
-        <p>scope.eotf (TimeFactory.formatEOT) = {{ eotf }}</p>
-        <p>scope.eotff (RiserFactory.timeString(TimeFactory.equationOfTime()) = {{ eotff }}</p>
-
-        <h5>JD</h5>
-        <p>scope.jDay (TimeFactory.cardinalDay) = {{ jDay }}</p>
-        <p>scope.JD (RiserFactory.getJD) = {{ JD }}</p>
-        <p>scope.timeJulianCent = {{ timeJulianCent }}</p>
-
-        <h5>Dates</h5>
-        <p>day = {{ day }}</p>
-        <p>month = {{ month }}</p>
-        <p>year = {{ year }}</p>
-
-        <h5>Noon</h5>
-        <p>scope.noon = {{ noon }}</p>
-
-        <h5>DST</h5>
-        <p>scope.x.dst = {{ x.dst }}</p>
-
-      </div>
     </div>
 
 

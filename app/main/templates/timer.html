@@ -4,26 +4,26 @@
 
 
 
-<ion-view view-title="Real Local Times">
+<ion-view view-title="Local Times">
   <!-- do you want padding? -->
   <ion-content >
 
     <!-- content goes here -->
     <div class="padding">
     <p class="type type-muted">
-      @&nbsp;{{ nearestCity }} <br>
-   <!--    <span>
+      <span ng-if="addressMode" ng-click="changeAddressMode()">
+        @&nbsp;{{ nearestCity }} <br>
+      </span>
+      <span ng-if="!addressMode" ng-click="changeAddressMode()">
         <i class="icon ion-map"></i>&nbsp;
         <i class="icon ion-android-more-vertical"></i>
         {{ map.center.longitude | number:3 }}
         ,
         <i class="icon ion-android-more-horizontal"></i>
         {{ map.center.latitude | number:3 }}
-      </span> -->
+      </span>
 
     </p>
-
-
 
     <ui-gmap-google-map center='map.center' zoom='map.zoom' options="map.options" styles="map.styles"></ui-gmap-google-map>
 
@@ -67,6 +67,20 @@
         </h2>
 
       </div>
+    </div>
+
+    <div class="list">
+      <li class="item item-no-border item-toggle">
+         Daylight Savings Time
+          <span ng-if="x.dst">On</span>
+          <span ng-if="!x.dst">Off</span>
+         <label class="toggle toggle-energized">
+           <input type="checkbox" ng-model="x.dst" ng-click="initLocation()">
+           <div class="track">
+             <div class="handle"></div>
+           </div>
+         </label>
+      </li>
     </div>
 
 

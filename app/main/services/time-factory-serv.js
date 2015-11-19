@@ -4,8 +4,7 @@ angular.module('main')
 
   $log.log('Time Factory reporting for duty.');
 
-  var epoc = new Date().getTimezoneOffset() * 60;
-      epoc = epoc * -1;
+
 
   /// Form matters.
 
@@ -138,7 +137,10 @@ angular.module('main')
   // }
 
   // Difference btw mean solar and clock.
-  function diffMeanClock (longitude) {
+  function diffMeanClock (longitude, dst) {
+    var dayLightTime = dst ? 3600 : 0;
+    var epoc = new Date().getTimezoneOffset() * 60 + dayLightTime;
+    epoc = epoc * -1;
     var meanEpoc = longitude * (86400 / 360);
     var diffTime = meanEpoc - epoc;
     return diffTime;
@@ -215,17 +217,19 @@ angular.module('main')
 
   // Mean local solar time.
   ////////////////////////////////////
-  function getMeanSolar (longitude) {
+  function getMeanSolar (longitude, dst) {
+    var dst = dst;
     var lon = longitude;
-    var meanTime = new Date(new Date().valueOf() + diffMeanClock(lon) * 1000); // Mean solar time by clock diff.
+    var meanTime = new Date(new Date().valueOf() + diffMeanClock(lon, dst) * 1000); // Mean solar time by clock diff.
     return meanTime; // <-- typeof === date
   }
 
   // True Solar Time.
   ////////////////////////////////////
-  function getTrueSolar (longitude) {
+  function getTrueSolar (longitude, dst) {
+    var dst = dst;
     var lon = longitude;
-    var trueTime = new Date(new Date().valueOf() + diffMeanClock(lon) * 1000 - equationOfTime() * 1000);
+    var trueTime = new Date(new Date().valueOf() + diffMeanClock(lon, dst) * 1000 - equationOfTime() * 1000);
     return trueTime; // <-- typeof === date
   }
 

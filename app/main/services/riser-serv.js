@@ -618,12 +618,26 @@ angular.module('main')
   //   //alert("JD " + jday + "  " + rise + "  " + set + "  ")
   // }
 
+  function howHighInSky (JD) {
+    var jd = JD;
+    var t = calcTimeJulianCent(jd);
+    return calcSunApparentLong(t);
+  }
+
+  function getDeclination (JD) {
+    var jd = JD;
+    var t = calcTimeJulianCent(jd);
+    return calcSunDeclination(t);
+  }
+
   return {
     getJD: getJD,
     calcTimeJulianCent: calcTimeJulianCent,
     solarNoon: calcSolNoon,
     timeString: timeString,
-    calcSunriseSet: calcSunriseSet
+    calcSunriseSet: calcSunriseSet,
+    howHighInSky: howHighInSky,
+    getDeclination: getDeclination
   };
 
 

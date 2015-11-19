@@ -2,26 +2,27 @@
 angular.module('main')
 .controller('SunnyCtrl', function ($scope, $log, $cordovaGeolocation, TimeFactory, RiserFactory, GeolocationFactory) {
 
-  $scope.jDay = TimeFactory.cardinalDay();
-  $scope.eot = TimeFactory.equationOfTime();
-  $scope.eotf = TimeFactory.formatEOT();
 
-  $scope.eotff = RiserFactory.timeString(TimeFactory.equationOfTime());
-  // $scope.eotff = RiserFactory.timeString(-);
+  $scope.nearestCity;
+
+  $scope.x = {}; // models need dots
+  $scope.x.dst = false;
+
+  $scope.addressMode = true;
+
+  $scope.changeAddressMode = function () {
+    if ( $scope.addressMode ) {
+      $scope.addressMode = false;
+    } else {
+      $scope.addressMode = true;
+    }
+  }
 
   var d = new Date();
   $scope.day = d.getDate();
   $scope.month = d.getMonth();
   $scope.year = d.getFullYear();
-
   $scope.JD = RiserFactory.getJD($scope.day, $scope.month, $scope.year); // (day, month, year)
-  $scope.timeJulianCent = RiserFactory.calcTimeJulianCent($scope.JD);
-  $scope.nearestCity;
-
-
-  // $scope.dst = false;
-  $scope.x = {};
-  $scope.x.dst = false;
 
   function morning (lat, lng, tz) {
     var lat = lat;
@@ -56,8 +57,6 @@ angular.module('main')
 
     setCity(position);
   };
-
-
 
   $scope.showError = function(error) {
     switch (error.code) {

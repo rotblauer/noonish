@@ -36,6 +36,15 @@ angular.module('main', [
         }
       }
     })
+    .state('main.numbas', {
+      url: '/numbas',
+      views: {
+        'pageContent': {
+          templateUrl: 'main/templates/numbas.html',
+          controller: 'NumbasCtrl'
+        }
+      }
+    })
     ;
     // .state('realTime', {
     //   url: '/real-time',
