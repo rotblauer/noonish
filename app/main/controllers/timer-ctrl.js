@@ -1,6 +1,6 @@
 'use strict';
 angular.module('main')
-.controller('TimerCtrl', function ($scope, $log, $timeout, $cordovaGeolocation, TimeFactory, RiserFactory, GeolocationFactory) {
+.controller('TimerCtrl', function ($scope, $log, $timeout, $cordovaGeolocation, MAPSTYLE, TimeFactory, RiserFactory, GeolocationFactory) {
 
     // Initialize variables.
     $scope.lat;
@@ -31,41 +31,7 @@ angular.module('main')
 
     $scope.initializeMap = function (position) {
 
-      var styleArray = [
-  {
-    "featureType": "road.highway",
-    "stylers": [
-      { "visibility": "off" }
-    ]
-  },{
-    "featureType": "road.arterial",
-    "stylers": [
-      { "visibility": "off" }
-    ]
-  },{
-    "featureType": "road.local",
-    "stylers": [
-      { "visibility": "off" }
-    ]
-  },{
-    "featureType": "administrative.locality",
-    "stylers": [
-      { "visibility": "simplified" }
-    ]
-  },{
-    "featureType": "water",
-    "stylers": [
-      { "color": "#87d5dd" }
-    ]
-  },{
-    "featureType": "landscape.man_made",
-    "stylers": [
-      { "saturation": 29 },
-      { "lightness": 17 },
-      { "gamma": 0.81 }
-    ]
-  }
-];
+      var styleArray = MAPSTYLE.STYLE1;
 
       // Create the Google Map
       $scope.map = {
