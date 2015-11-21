@@ -38,7 +38,13 @@ $ionicons-font-path: "../assets/fonts" !default;
 // Include all of Ionic
 @import "../../bower_components/ionic/scss/ionic";
 
-
+.slider {
+  // height: 100%;
+}
+.slider-pager {
+  top: 0;
+  bottom: initial;
+}
 
 .icon-mirrored {
   -webkit-transform: scale(-1, 1);
@@ -72,11 +78,11 @@ $ionicons-font-path: "../assets/fonts" !default;
 }
 
 .angular-google-map {
-  height: 250px;
+  height: 220px;
   width: 100%;
 }
 .angular-google-map-container {
-  height: 250px;
+  height: 220px;
   width: 100%;
   // -webkit-box-shadow: 0px 4px 44px -14px rgba(102,102,102,1);
   // -moz-box-shadow: 0px 4px 44px -14px rgba(102,102,102,1);

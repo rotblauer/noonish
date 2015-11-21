@@ -1,9 +1,24 @@
-<ion-view view-title="Local Times">
+<ion-view view-name="timer" view-title="Local Times">
+
+<ion-nav-bar class="bar-light">
+  <!-- back button, shown if applicable -->
+  <ion-nav-back-button>
+  </ion-nav-back-button>
+  <!-- nav button, shown if applicable -->
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear" ui-sref="numbas">
+    Moar!
+    </button>
+  </ion-nav-buttons>
+</ion-nav-bar>
+
+
   <!-- do you want padding? -->
   <ion-content >
 
     <!-- content goes here -->
     <div class="padding">
+
     <p class="type type-muted">
       <span ng-if="addressMode" ng-click="changeAddressMode()">
         @&nbsp;{{ nearestCity }} <br>
@@ -16,66 +31,163 @@
         <i class="icon ion-android-more-horizontal"></i>
         {{ map.center.latitude | number:3 }}
       </span>
-
     </p>
 
-    <ui-gmap-google-map center='map.center' zoom='map.zoom' options="map.options" styles="map.styles"></ui-gmap-google-map>
-
-    <div class="row">
-
+    <div class="row" ng-if="error">
       <div class="col col-100">
-
-        <p class="type type-muted">
-          True solar time
-        </p>
-        <h2 class="type skinny skinny-head type-positive ">
-          <i class="icon ion-ios-time-outline"></i>
-          {{ trueTime | date: 'HH:mm:ss' }}
-          &nbsp;
-          <span class="type type-calm" style="font-size: .8em;">
-            {{ diffTrueClock  }}
-          </span>
-        </h2>
-
-
-        <p class="type type-muted">
-          Local mean time
-        </p>
-        <h2 class="type skinny skinny-head type-positive">
-
-          <i class="icon ion-ios-clock-outline"></i>
-          {{ meanTime | date: 'HH:mm:ss' }}
-          &nbsp;
-          <span class="type type-calm" style="font-size: .8em;">
-            {{ diffMeanClock  }}
-          </span>
-        </h2>
-
-        <p class="type type-muted">
-          Clock time
-        </p>
-        <h2 class="type skinny skinny-head type-muted">
-
-          <i class="icon ion-ios-clock-outline"></i>
-          {{ clock | date: 'HH:mm:ss' }}
-        </h2>
-
+        <h5 class="type type-assertive" ng-if="error">
+          Error: {{ error }}
+        </h5>
       </div>
     </div>
 
-    <div class="list">
-      <li class="item item-no-border item-toggle">
-         Daylight Savings Time
-          <span ng-if="x.dst">On</span>
-          <span ng-if="!x.dst">Off</span>
-         <label class="toggle toggle-energized">
-           <input type="checkbox" ng-model="x.dst" ng-click="initLocation()">
-           <div class="track">
-             <div class="handle"></div>
-           </div>
-         </label>
-      </li>
-    </div>
+    <ui-gmap-google-map
+      center='map.center'
+      zoom='map.zoom'
+      options="map.options"
+      styles="map.styles"
+      events="map.events">
+
+      <ui-gmap-marker
+        idKey='marker.idKey'
+        coords="marker.coords"
+              >
+              <!-- idKey='{expression}'
+              coords='{expression}'
+              click='{expression}'
+              options='{expression}'
+              events='{expression}'
+              control='{expression}' -->
+      </ui-gmap-marker>
+
+    </ui-gmap-google-map>
+
+
+    <button class="button button-positive button-block icon ion-pinpoint" ng-click="setLocate()"></button>
+
+
+    <!-- SLIDE PAGER -->
+
+      <ion-slide-pager></ion-slide-pager>
+
+
+    <!-- SLIDE BOX -->
+    <ion-slide-box active-slide="0" class="" show-pager="true" >
+
+    <!-- LOCAL TIMES -->
+    <ion-slide>
+      <div>
+      <div class="row skinny skinny-ass">
+
+        <div class="col col-100">
+
+          <p class="type type-muted">
+            True solar time
+          </p>
+          <h2 class="type skinny skinny-head type-positive ">
+            <i class="icon ion-ios-time-outline"></i>
+            {{ trueTime | date: 'HH:mm:ss' }}
+            &nbsp;
+            <span class="type type-calm" style="font-size: .8em;">
+              {{ diffTrueClock  }}
+            </span>
+          </h2>
+
+
+          <p class="type type-muted">
+            Local mean time
+          </p>
+          <h2 class="type skinny skinny-head type-positive">
+
+            <i class="icon ion-ios-clock-outline"></i>
+            {{ meanTime | date: 'HH:mm:ss' }}
+            &nbsp;
+            <span class="type type-calm" style="font-size: .8em;">
+              {{ diffMeanClock  }}
+            </span>
+          </h2>
+
+          <p class="type type-muted">
+            Clock time
+          </p>
+          <h2 class="type skinny skinny-head type-muted">
+
+            <i class="icon ion-ios-clock-outline"></i>
+            {{ clock | date: 'HH:mm:ss' }}
+          </h2>
+
+        </div>
+      </div>
+
+      <div class="list skinny skinny-head">
+        <li class="item item-no-border item-toggle">
+           Daylight Savings Time
+            <span ng-if="x.dst">On</span>
+            <span ng-if="!x.dst">Off</span>
+           <label class="toggle toggle-energized">
+             <input type="checkbox" ng-model="x.dst" ng-click="initLocation()">
+             <div class="track">
+               <div class="handle"></div>
+             </div>
+           </label>
+        </li>
+      </div>
+      </div>
+
+    </ion-slide>
+
+    <!-- SUN TIMES -->
+    <ion-slide>
+      <div class="" ng-controller="SunnyCtrl">
+
+        <div class="row skinny skinny-ass">
+
+          <div class="col col-100">
+
+            <p class="type type-muted">Sunrise</p>
+            <h2 class="type type-royal skinny skinny-head">
+              <i class="icon ion-contrast"></i>
+              {{ sunrise }}
+            </h2>
+
+            <p class="type type-muted">Solar Noon</p>
+            <h2 class="type type-energized skinny skinny-head">
+              <i class="icon ion-record"></i>
+              {{ noon }}
+            </h2>
+
+            <p class="type type-muted">Sunset</p>
+            <h2 class="type type-calm skinny skinny-head">
+              <i class="icon ion-contrast "></i>
+              {{ sunset }}
+            </h2>
+          </div>
+
+        </div>
+
+        <div class="list">
+          <li class="item item-no-border item-toggle">
+             Daylight Savings Time
+              <span ng-if="x.dst">On</span>
+              <span ng-if="!x.dst">Off</span>
+             <label class="toggle toggle-energized">
+               <input type="checkbox" ng-model="x.dst" ng-click="initLocation()">
+               <div class="track">
+                 <div class="handle"></div>
+               </div>
+             </label>
+          </li>
+        </div>
+      </div>
+
+    </ion-slide>
+
+
+
+
+    </ion-slide-box>
+
+
 
 
 

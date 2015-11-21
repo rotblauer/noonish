@@ -3,13 +3,10 @@ angular.module('main')
 .controller('TimerCtrl', function ($scope, $log, $timeout, $cordovaGeolocation, MAPSTYLE, TimeFactory, RiserFactory, GeolocationFactory) {
 
     // Initialize variables.
-    $scope.lat;
-    $scope.lng;
+    $scope.position = {}; // will init to current, then can be changed to query
     $scope.map;
-    $scope.accuracy ;
     $scope.error = '';
-    var n = 0;
-
+    var n = 0; // init counter for getCity
     $scope.x = {};
     $scope.x.dst;
 
@@ -23,18 +20,15 @@ angular.module('main')
       }
     }
 
+    // init() -> get initial location, set map, start timers
+    // go() -> get map center(), get times for new loc
 
-    // Initialize result function in case of error.
-    $scope.showResult = function() {
-      return $scope.error === '';
-    };
+///////////// ref for world clock
+// http://www.proglogic.com/code/javascript/time/worldclock.php
 
-    $scope.initializeMap = function (position) {
-
-      var styleArray = MAPSTYLE.STYLE1;
-
-      // Create the Google Map
-      $scope.map = {
+    function initializeMap (position) { // init map to current location
+      var styleArray = MAPSTYLE.STYLE1; // constants/mapstyle-constant.js
+      $scope.map = { // Create the Google Map
         center: {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
@@ -42,41 +36,124 @@ angular.module('main')
         zoom: 10,
         styles: styleArray,
         options: {
-          disableDefaultUI: true
+          // disableDefaultUI: true
+        },
+        events: {
+          // dblclick: function (latLng) {
+          //   // var spot = ;
+          //   alert('you clicked!');
+          //   $log.log('latLng: ', latLng);
+          //   clickLocate(latLng);
+          // }
         }
       };
+      $scope.marker = {
+        map: $scope.map,
+        idKey: '1',
+        coords: $scope.map.center
+      };
+      // $scope.marker.bindTo('coords', $scope.map, 'center');
     };
 
-    $scope.meanTimer = function (position) {
-      var lon = position.coords.longitude;
-      $scope.meanTime = TimeFactory.getMeanSolar(lon, $scope.x.dst);
-    };
-
-    $scope.trueTimer = function (position) {
-      var lon = position.coords.longitude;
-      $scope.trueTime = TimeFactory.getTrueSolar(lon, $scope.x.dst);
-    };
-
-    $scope.handlePosition = function(position) {
-
-      // Set location variables.
-      $scope.lat = position.coords.latitude;
-      $scope.lng = position.coords.longitude;
-      $scope.accuracy = position.coords.accuracy;
-      $scope.initializeMap(position);
-      $scope.meanTimer(position); // get mean local
-      $scope.trueTimer(position); // get true local
-      $scope.diffMeanClock = RiserFactory.timeString(TimeFactory.diffMeanClock($scope.lng));
-      $scope.diffTrueClock = RiserFactory.timeString(TimeFactory.diffTrueClock($scope.lng));
-
-      if ( n === 0 ) {
-        setCity(position);
+    function meanTimer (position) {
+      if (position !== null) {
+        // $log.log(position);
+        var pos = position;
+        var lon = pos.coords.longitude;
+        $scope.meanTime = TimeFactory.getMeanSolar(lon, $scope.x.dst);
       }
-
-      n += 1; // index counter
     };
 
-    $scope.showError = function(error) {
+    function trueTimer (position) {
+      if (position !== null) {
+        // $log.log(position);
+        var pos = position;
+        var lon = pos.coords.longitude;
+        $scope.trueTime = TimeFactory.getTrueSolar(lon, $scope.x.dst);
+      }
+    };
+
+    function keepTime () {
+      if ( $scope.position !== null ) { // if position promise is returned
+        var pos = $scope.position;
+        meanTimer(pos); // get mean local
+        trueTimer(pos); // get true local
+        $scope.diffMeanClock = RiserFactory.timeString(TimeFactory.diffMeanClock(pos.coords.longitude));
+        $scope.diffTrueClock = RiserFactory.timeString(TimeFactory.diffTrueClock(pos.coords.longitude));
+      }
+    }
+
+    function geoLocateHandler (position) {
+      // Set location variables.
+      $scope.position = position;
+      initializeMap(position);
+      if ( n === 0 ) { // only do this the first time
+        getCity(position);
+        tickTock(); // so we wait for position to be returned
+      }
+      n += 1;
+
+    };
+
+    function getCity (position) {
+      GeolocationFactory.getNearByCity(position.coords.latitude, position.coords.longitude)
+        .then(function (data) {
+          $log.log('nearByCity data', data);
+          $scope.nearestCity = data.data.results[0]['formatted_address'];
+        });
+    }
+
+    // get user's current location
+    function geoLocate () {
+      GeolocationFactory.getLocation()
+        .then(
+          geoLocateHandler, // success callback
+          showError //
+        );
+    };
+
+    // set location by map
+    $scope.setLocate = function () {
+      $log.log($scope.map.center); // { latitude: 40, longitude: 70 }
+      var newPos = { // format map.center like the geolocator
+        coords: {
+          latitude: $scope.map.center.latitude,
+          longitude: $scope.map.center.longitude
+        }
+      };
+      $scope.position = newPos;
+      getCity(newPos);
+      keepTime();
+      // $scope.position = $scope.map.center;
+    }
+
+    function clickLocate (spot) {
+      $log.log(spot); // { latitude: 40, longitude: 70 }
+      var newPos = { // format map.center like the geolocator
+        coords: {
+          latitude: spot.latitude,
+          longitude: spot.longitude
+        }
+      };
+      $scope.position = newPos;
+      getCity(newPos);
+      keepTime();
+      // $scope.position = $scope.map.center;
+    }
+
+    function tickTock () {
+      $scope.clock = new Date(); // Set the clock time.
+      keepTime();
+      $timeout(tickTock, 1000); // Tick.
+    };
+
+    geoLocate(); // init
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Dumb helpers.
+    ///////////////////////////////////////////////////////////////////////////
+    function showError (error) {
       switch (error.code) {
       // da fuck does this work?
       case error.PERMISSION_DENIED:
@@ -92,40 +169,10 @@ angular.module('main')
         $scope.error = 'An unknown error occurred.';
         break;
       }
-      // $scope.$apply();
     };
 
-    function setCity (position) {
-      GeolocationFactory.getNearByCity($scope.lat, $scope.lng)
-        .then(function (data) {
-          $log.log('nearByCity data', data);
-          $scope.nearestCity = data.data.results[0]['formatted_address'];
-        });
-    }
-
-    $scope.getAndUpdateLocation = function () {
-      GeolocationFactory.getLocation()
-        .then($scope.handlePosition, $scope.showError);
+    // Initialize result function in case of error.
+    $scope.showResult = function() {
+      return $scope.error === '';
     };
-
-    // function initLocation () {
-    //   GeolocationFactory.getLocation()
-    //     .then(setCity, $scope.showError);
-    //   $scope.getAndUpdateLocation();
-    // }
-
-    // initLocation();
-
-
-    var clockIt = function() {
-      $scope.clock = new Date();
-      // Set the clock time.
-
-      // Update location.
-      $scope.getAndUpdateLocation();
-      // Tick.
-      $timeout(clockIt, 1000);
-    };
-    $timeout(clockIt, 1000);
-
 });
