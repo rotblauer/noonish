@@ -9,6 +9,7 @@ angular.module('main')
     $scope.position = {}; // will init to current, then can be changed to query
     $scope.map;
     $scope.error = '';
+    $scope.addressMode = true;
     var n = 0; // init counter for getCity
 
     $scope.dstOffset; // daylight savings time according to google, ie probably 0 or 3600
@@ -23,9 +24,6 @@ angular.module('main')
         //   timeZoneId: "America/New_York"
         //   timeZoneName: "Eastern Standard Time"
 
-
-    $scope.addressMode = true;
-
     $scope.changeAddressMode = function () {
       if ( $scope.addressMode ) {
         $scope.addressMode = false;
@@ -34,6 +32,33 @@ angular.module('main')
       }
     }
 
+    ////////////////////////////////////////////////////////////
+    // Sunburners.
+    ////////////////////////////////////////////////////////////
+    var d = new Date();
+    $scope.day = d.getDate();
+    $scope.month = d.getMonth();
+    $scope.year = d.getFullYear();
+    $scope.JD = RiserFactory.getJD($scope.day, $scope.month, $scope.year); // (day, month, year)
+
+    // function morning (latt, lngg, tzz) {
+    //   var lat = latt;
+    //   var lon = lngg;
+    //   var tz = tzz;
+    //   var dst = $scope.x.dst;
+    //   $scope.sunrise = RiserFactory.calcSunriseSet(1, $scope.JD, lat, lon, tz, dst); // rise[1:morn, 0:eve], JD, latitude, longitude, timezone, dst
+    // }
+    // function evening (latt, lngg, tzz) {
+    //   var lat = latt;
+    //   var lon = lngg;
+    //   var tz = tzz;
+    //   var dst = $scope.x.dst;
+    //   $scope.sunset = RiserFactory.calcSunriseSet(0, $scope.JD, lat, lon, tz, dst); // rise[1:morn, 0:eve], JD, latitude, longitude, timezone, dst
+    // }
+
+    ////////////////////////////////////////////////////////////
+    // Timers.
+    ////////////////////////////////////////////////////////////
     function getTimeZone (position) {
       // $log.log('getTimeZone for ', position); // OK
       TimeFactory.getLocalTimeZoneGoogle(position.coords.latitude, position.coords.longitude)
@@ -43,24 +68,30 @@ angular.module('main')
           $scope.dstOffset = data.data.dstOffset;
           $scope.rawOffset = data.data.rawOffset;
           $scope.timeZoneName = data.data.timeZoneName;
-
+          $scope.mapMoved = false;
+          solarEventTimes(); // only called once
           tickTock(); // <-- TICK TOCKs initially called from here.
         }, function timeZoneError (error) {
           $log.log('Error getting time zone', error);
         });
     }
+    function solarEventTimes () {
+      var position = $scope.position;  // set function position to scope.
+      if (position !== null) {
+        $scope.sunrise = RiserFactory.calcSunriseSet(1, $scope.JD, position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset); // rise[1:morn, 0:eve], JD, latitude, longitude, timezone, dst
+        $scope.sunset = RiserFactory.calcSunriseSet(0, $scope.JD, position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset); // rise[1:morn, 0:eve], JD, latitude, longitude, timezone, dst
+        $scope.noon = RiserFactory.solarNoon($scope.JD, position.coords.longitude, $scope.rawOffset, $scope.dstOffset);
+      }
+    }
     function timesAndDiffs () {
-      var position = $scope.position;
+      var position = $scope.position;  // set function position to scope.
       if (position !== null) {
         var bundled = TimeFactory.allTheTimes(position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset);
-
         // times
         $scope.clock = bundled.times.localTime;
         $scope.meanTime = bundled.times.meanTime;
         $scope.trueTime = bundled.times.trueTime;
         // diffs
-        // $scope.diffMeanClock = RiserFactory.timeString(TimeFactory.allTheTimes(position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset).diffs.meanVclock);
-        // $scope.diffTrueClock = RiserFactory.timeString(TimeFactory.allTheTimes(position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset).diffs.trueVclock);
         $scope.diffMeanClock = RiserFactory.betterTimeString(bundled.diffs.meanVclock);
         $scope.diffTrueClock = RiserFactory.betterTimeString(bundled.diffs.trueVclock);
       }
@@ -71,10 +102,6 @@ angular.module('main')
       $timeout(tickTock, 1000); // calls itself every second
     }
 
-    $scope.$watch('position', function (val) {
-      $log.log('$scope.position changed to ', val);
-    });
-
     ////////////////////////////////////////////////////////////
     // Locations and mappery.
     ////////////////////////////////////////////////////////////
@@ -82,12 +109,10 @@ angular.module('main')
       GeolocationFactory.getNearByCity(position.coords.latitude, position.coords.longitude)
         .then(function (data) {
           $log.log('nearByCity data', data);
-          if ( data.data.status !== 'ZERO_RESULTS' )
-          {
+          if ( data.data.status !== 'ZERO_RESULTS' ) {
             $scope.nearestCity = data.data.results[0]['formatted_address'];
           }
-          else
-          {
+          else {
             $scope.nearestCity = 'The wine dark sea.';
           }
         })
@@ -106,12 +131,21 @@ angular.module('main')
         styles: styleArray,
         options: {
           // disableDefaultUI: true
+        },
+        events: {
+          drag: function () {
+            $scope.mapMoved = true;
+          }
         }
       };
+      var mapIcon = 'main/assets/images/map-icon-target.png';
       $scope.marker = {
         map: $scope.map,
         idKey: '1',
-        coords: $scope.map.center
+        coords: $scope.map.center,
+        options: {
+          icon: mapIcon
+        }
       };
     };
     function geoLocateHandler (position) {
@@ -129,6 +163,7 @@ angular.module('main')
     }
     // current position
     $scope.geoLocate = function () {
+      n = 0;
       GeolocationFactory.getLocation()
         .then(
           geoLocateHandler, // success callback

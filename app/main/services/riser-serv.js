@@ -269,7 +269,7 @@ angular.module('main')
     // if seconds less than a day
     if ( (seconds < 86400) && (seconds > -86400) ) {
 
-      $log.log('seconds', seconds);
+      // $log.log('seconds', seconds);
       // positive
       if ( seconds < 0 ) {
         isNeg = true;
@@ -283,7 +283,7 @@ angular.module('main')
 
       var floatSecond = 60.0 * (floatMinute - minute);
       var second = Math.floor(floatSecond + 0.01);
-      $log.log(hour, minute, second);
+      // $log.log(hour, minute, second);
 
       if ( second > 59 ) {
         second =  second - 60;
@@ -404,33 +404,33 @@ angular.module('main')
   // Initializing and grabbering.
   //////////////////////////////////////////////////////////
 
-  function getTimeLocal()
-  {
-    // var dochr = readTextBox("hrbox", 2, 1, 1, 0, 23, 12)
-    // var docmn = readTextBox("mnbox", 2, 1, 1, 0, 59, 0)
-    // var docsc = readTextBox("scbox", 2, 1, 1, 0, 59, 0)
-    // var docpm = document.getElementById("pmbox").checked
-    // var docdst = document.getElementById("dstCheckbox").checked
+  // function getTimeLocal()
+  // {
+  //   // var dochr = readTextBox("hrbox", 2, 1, 1, 0, 23, 12)
+  //   // var docmn = readTextBox("mnbox", 2, 1, 1, 0, 59, 0)
+  //   // var docsc = readTextBox("scbox", 2, 1, 1, 0, 59, 0)
+  //   // var docpm = document.getElementById("pmbox").checked
+  //   // var docdst = document.getElementById("dstCheckbox").checked
 
-    // var dochr = hour;
-    // var docmn = minute;
-    // var docsc = second;
-    var d = new Date();
-    var dochr = d.getHours();
-    var docmn = d.getMinutes();
-    var docsc = d.getSeconds();
+  //   // var dochr = hour;
+  //   // var docmn = minute;
+  //   // var docsc = second;
+  //   var d = new Date();
+  //   var dochr = d.getHours();
+  //   var docmn = d.getMinutes();
+  //   var docsc = d.getSeconds();
 
-    // var docpm =
-    var docdst = dst;
-    // if ( (docpm) && (dochr < 12) ) {
-    //   dochr += 12
-    // }
-    if (docdst) {
-      dochr -= 1
-    }
-    var mins = dochr * 60 + docmn + docsc/60.0
-    return mins
-  }
+  //   // var docpm =
+  //   var docdst = dst;
+  //   // if ( (docpm) && (dochr < 12) ) {
+  //   //   dochr += 12
+  //   // }
+  //   if (docdst) {
+  //     dochr -= 1
+  //   }
+  //   var mins = dochr * 60 + docmn + docsc/60.0
+  //   return mins
+  // }
 
   function getJD (day, month, year) {
     var docday = day;
@@ -558,17 +558,23 @@ angular.module('main')
     return (azimuth)
   }
 
-  function calcSolNoon(jd, longitude, timezone, dst)
-  {
-    $log.log('calcSolNoon working');
-    $log.log('calcSolNoon args of 4', jd, longitude, timezone, dst);
+  function calcSolNoon(jd, longitude, timezone, dstOffset) {
+  // timezone WAS in integer hours
+  // -> moving to integer seconds
+  // dst was in boolean
+  // -> moving to integer seconds
+    // $log.log('calcSolNoon working');
+    // $log.log('calcSolNoon args of 4', jd, longitude, timezone, dstOffset);
     var tnoon = calcTimeJulianCent(jd - longitude/360.0);
     var eqTime = calcEquationOfTime(tnoon);
     var solNoonOffset = 720.0 - (longitude * 4) - eqTime; // in minutes
     var newt = calcTimeJulianCent(jd + solNoonOffset/1440.0);
     eqTime = calcEquationOfTime(newt);
-    var solNoonLocal = 720 - (longitude * 4) - eqTime + (timezone*60.0); // in minutes
-    if (dst) { solNoonLocal += 60.0 }
+    // *adjusted*
+      // var solNoonLocal = 720 - (longitude * 4) - eqTime + (timezone*60.0); // hours -> minutes
+      var solNoonLocal = 720 - (longitude * 4) - eqTime + (timezone / 60.0); // seconds -> minutes
+      // if (dst) { solNoonLocal += 60.0 }
+      solNoonLocal += dstOffset / 60; // in minutes
     while (solNoonLocal < 0.0) {
       solNoonLocal += 1440.0;
     }
@@ -596,6 +602,12 @@ angular.module('main')
 
   //
   function calcSunriseSet(rise, JD, latitude, longitude, timezone, dst)
+
+  // timezone WAS integer hour, ie -5
+  // dst was bool
+  // -> timezone IS integer seconds
+  // -> dst IS integer seconds
+
   // rise = 1 for sunrise, 0 for sunset
   {
     // var id = ((rise) ? 0 : 1);
@@ -603,17 +615,12 @@ angular.module('main')
     var timeUTC = calcSunriseSetUTC(rise, JD, latitude, longitude);
     var newTimeUTC = calcSunriseSetUTC(rise, JD + timeUTC/1440.0, latitude, longitude);
     if ( isNumber(newTimeUTC) ) {
-      var timeLocal = newTimeUTC + (timezone * 60.0);
-      // if (document.getElementById(rise ? "showsr" : "showss").checked) {
-      //   var riseT = calcTimeJulianCent(JD + newTimeUTC/1440.0);
-      //   var riseAz = calcAzEl(0, riseT, timeLocal, latitude, longitude, timezone);
-      //   if (rise) {
-      //     showLineGeodesic2("sunrise", "#00aa00", riseAz);
-      //   } else {
-      //     showLineGeodesic2("sunset", "#ff0000", riseAz);
-      //   }
-      // }
-      timeLocal += ((dst) ? 60.0 : 0.0);
+
+      // var timeLocal = newTimeUTC + (timezone * 60.0);
+      var timeLocal = newTimeUTC + (timezone / 60.0);
+      // timeLocal += ((dst) ? 60.0 : 0.0);
+      timeLocal += (dst / 60.0);
+
       if ( (timeLocal >= 0.0) && (timeLocal < 1440.0) ) {
         return timeString(timeLocal,2);
       } else  {
@@ -656,7 +663,8 @@ angular.module('main')
       julianday += increment;
       time = calcSunriseSetUTC(rise, julianday, latitude, longitude);
     }
-    var timeLocal = time + tz * 60.0 + ((dst) ? 60.0 : 0.0)
+    var timeLocal = time + (tz / 60.0) + (dst / 60.0) // was tz * 60, now in seconds so tz / 60.0
+                                                      // was dst bool => ((dst) ? 60.0 : 0.0), now in seconds
     while ((timeLocal < 0.0) || (timeLocal >= 1440.0))
     {
       var incr = ((timeLocal < 0) ? 1 : -1)

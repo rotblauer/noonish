@@ -26,10 +26,10 @@
       <span ng-if="!addressMode" ng-click="changeAddressMode()">
         <i class="icon ion-map"></i>&nbsp;
         <i class="icon ion-android-more-vertical"></i>
-        {{ map.center.longitude | number:3 }}
+        {{ map.center.longitude | number:4 }}
         ,
         <i class="icon ion-android-more-horizontal"></i>
-        {{ map.center.latitude | number:3 }}
+        {{ map.center.latitude | number:4 }}
       </span>
     </p>
 
@@ -51,6 +51,7 @@
       <ui-gmap-marker
         idKey='marker.idKey'
         coords="marker.coords"
+        options="marker.options"
               >
               <!-- idKey='{expression}'
               coords='{expression}'
@@ -63,7 +64,15 @@
     </ui-gmap-google-map>
 
 
-  <button class="button button-block icon ion-pinpoint" ng-click="chooseLocation(map.center)"></button>
+  <div class="row skinny skinny-ass">
+    <div class="col col-50">
+      <button class="button button-block icon-left ion-navigate" ng-class="{ 'button-balanced' : ( mapMoved === true) }" ng-click="chooseLocation(map.center)">{{ map.center.latitude | number:1 }}, {{ map.center.longitude | number:1 }}</button>
+    </div>
+    <div class="col col-50">
+      <button class="button button-block button-positive icon-left ion-pinpoint" ng-click="geoLocate()">Find me</button>
+    </div>
+  </div>
+
  <!--  <div class="row">
     <div class="col col-50"><button class="button button-positive icon ion-pinpoint" ng-click="chooseLocation(map.center)"></button></div>
     <div class="col col-50"><button class="button button-calm icon ion-pinpoint" ng-click="reCenter()"></button></div>
@@ -75,6 +84,7 @@
     <!-- SLIDE PAGER -->
 
       <ion-slide-pager></ion-slide-pager>
+
 
 
     <!-- SLIDE BOX -->
@@ -114,7 +124,7 @@
           </h2>
 
           <p class="type type-muted">
-            Clock time ({{timeZoneName}})
+            Clock time ({{timeZoneName || 'measured longitudinally'}})
           </p>
           <h2 class="type skinny skinny-head type-muted">
 
@@ -130,25 +140,24 @@
 
     <!-- SUN TIMES -->
     <ion-slide>
-      <div class="" ng-controller="SunnyCtrl">
-
+      <div class="" >
         <div class="row skinny skinny-ass">
 
           <div class="col col-100">
 
-            <p class="type type-muted">Sunrise</p>
+            <p class="type type-muted"><i class="icon ion-ios-clock-outline"></i> Sunrise</p>
             <h2 class="type type-royal skinny skinny-head">
               <i class="icon ion-contrast"></i>
               {{ sunrise }}
             </h2>
 
-            <p class="type type-muted">Solar Noon</p>
+            <p class="type type-muted"><i class="icon ion-ios-clock-outline"></i> Solar Noon</p>
             <h2 class="type type-energized skinny skinny-head">
               <i class="icon ion-record"></i>
               {{ noon }}
             </h2>
 
-            <p class="type type-muted">Sunset</p>
+            <p class="type type-muted"><i class="icon ion-ios-clock-outline"></i> Sunset</p>
             <h2 class="type type-calm skinny skinny-head">
               <i class="icon ion-contrast "></i>
               {{ sunset }}

@@ -43,7 +43,9 @@ $ionicons-font-path: "../assets/fonts" !default;
 }
 .slider-pager {
   top: 0;
-  bottom: initial;
+  // bottom: initial;
+  margin-top: 0px;
+  margin-bottom: 10px;
 }
 
 .icon-mirrored {
