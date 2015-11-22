@@ -80,7 +80,17 @@ angular.module('main')
       GeolocationFactory.getNearByCity(position.coords.latitude, position.coords.longitude)
         .then(function (data) {
           $log.log('nearByCity data', data);
-          $scope.nearestCity = data.data.results[0]['formatted_address'];
+          if ( data.data.status !== 'ZERO_RESULTS' )
+          {
+            $scope.nearestCity = data.data.results[0]['formatted_address'];
+          }
+          else
+          {
+            $scope.nearestCity = 'The wine dark sea.';
+          }
+        })
+        .catch( function couldntGetCity (error) {
+          $log.log('Just keep swimming.');
         });
     }
     function initializeMap (position) { // init map to current location

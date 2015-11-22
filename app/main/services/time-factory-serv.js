@@ -157,17 +157,25 @@ angular.module('main')
   //   var trueTime = new Date(new Date().valueOf() + diffMeanClock(lon, dst) * 1000 - equationOfTime() * 1000);
   //   return trueTime; // <-- typeof === date
   // }
-  var n = 0;
   //
   function allTheTimes (latitude, longitude, rawOffset, dstOffset) {
+
     // diffs
-    if ( n < 10 ) {
-      $log.log('TimeFactory.allTheTimes :: latitude, longitude, rawOffset, dstOffset', latitude, longitude, rawOffset, dstOffset);
+    // if over land, where apparently time zones exist
+    if ( typeof rawOffset !== 'undefined' ) {
+      var epoc = rawOffset + dstOffset;
+      var meanEpoc = longitude * (86400 / 360); // seconds in a day divided by 360 degrees
+      var daDiffMeanClock = meanEpoc - epoc; // diff mean time -> longitude ratio :: timezone
+      var daDiffTrueClock = daDiffMeanClock - equationOfTime(); // " minus eot
     }
-    var epoc = rawOffset + dstOffset;
-    var meanEpoc = longitude * (86400 / 360); // seconds in a day divided by 360 degrees
-    var daDiffMeanClock = meanEpoc - epoc; // diff mean time -> longitude ratio :: timezone
-    var daDiffTrueClock = daDiffMeanClock - equationOfTime(); // " minus eot
+    // else at sea, where the time is just the exact time.
+    // should return mean local time without 'epoc', which is essentially man-made time chunker
+    // ie diffMean => 0, diffTrue => eot
+    else {
+      var meanEpoc = longitude * (86400 / 360);
+      var daDiffMeanClock = meanEpoc - meanEpoc; // 0
+      var daDiffTrueClock = daDiffMeanClock - equationOfTime();
+    }
 
       var diffs = {
         meanVclock: daDiffMeanClock, // seconds
@@ -175,21 +183,20 @@ angular.module('main')
       };
 
     // times
-
     // get system time
     var localSystemTime = new Date().valueOf(); // assume their system clock is accurate to the time zone. iphono
-    // $log.log('localSystemTime', localSystemTime); // 1448207059235
     var localSystemTimezone = new Date().getTimezoneOffset().valueOf() * 60 ; // seconds
-    // var localSystemTimezoneSeconds = localSystemTimezone * 60;
-    // $log.log('localSystemTimeZone', localSystemTimezoneSeconds);
-
+    // get GMTtime
     var GMTtime = new Date(localSystemTime + localSystemTimezone * 1000); //
+    // set clocktime
+    if ( typeof rawOffset !== 'undefined' ) { // if over land
+      var localTimeAnywhere = new Date(GMTtime.valueOf() + ((rawOffset + dstOffset) * 1000));
+    }
+    else {
+      var localTimeAnywhere = new Date(GMTtime.valueOf() + (meanEpoc * 1000));
+    }
 
-    $log.log('TimeFactory.allThetimes : GMTtime', GMTtime);
-
-    var localTimeAnywhere = new Date(GMTtime.valueOf() + ((rawOffset + dstOffset) * 1000));
-
-    $log.log('TimeFactory.allThetimes : localtime', localTimeAnywhere);
+    // calculate mean and true time from clocktime
     var meanTimeThere = new Date(localTimeAnywhere.valueOf() + diffs.meanVclock * 1000); // typeof === Date
     var trueTimeThere = new Date(localTimeAnywhere.valueOf() + diffs.trueVclock * 1000); // "
 
@@ -198,11 +205,11 @@ angular.module('main')
         meanTime: meanTimeThere,
         trueTime: trueTimeThere
       };
-    n += 1;
 
     return { diffs: diffs, times: times };
   }
 
+  // ! THIS ONLY WORKS FOR OVER LAND, NOT OVER WATER. apparently google thinks there are no time zones at sea.
   function getLocalTimeZoneGoogle (latitude, longitude) {
     var defer = $q.defer();
     var timestamp = Date.now() / 1000 | 0
