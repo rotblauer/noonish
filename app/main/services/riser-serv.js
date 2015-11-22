@@ -296,31 +296,31 @@ angular.module('main')
         } else {
           hour += 1;
         }
-
       }
 
       if ( hour !== 0 ) {
         if ( isNeg ) {
-          var output = '-'+hour + ':' + zeroPad(minute,2) + ':' + zeroPad(second,2);
+          var output = '-' + hour + ':' + zeroPad(minute,2) + ':' + zeroPad(second,2);
         }
         else {
-          var output = hour + ':' + zeroPad(minute,2) + ':' + zeroPad(second,2);
+          var output = '+' + hour + ':' + zeroPad(minute,2) + ':' + zeroPad(second,2);
         }
-
       } else {
         if ( isNeg ) {
-          var output = '-'+zeroPad(minute,2) + ':' + zeroPad(second,2);
+          var output = '-' + zeroPad(minute,2) + ':' + zeroPad(second,2);
         }
         else {
-          var output = zeroPad(minute,2) + ':' + zeroPad(second,2);
+          var output = '+' + zeroPad(minute,2) + ':' + zeroPad(second,2);
         }
-
       }
     }
     else {
       var output = 'A long ass time.';
     }
-    return output;
+    return {
+      output: output,
+      behind: isNeg
+    };
   }
 
   function timeDateString(JD, minutes)

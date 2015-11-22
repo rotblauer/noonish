@@ -94,8 +94,8 @@
             <i class="icon ion-ios-time-outline"></i>
             {{ trueTime | date: 'HH:mm:ss' }}
             &nbsp;
-            <span class="type type-calm" style="font-size: .8em;">
-              {{ diffTrueClock  }}
+            <span class="type" ng-class="{ 'type-balanced' : !diffTrueClock.behind, 'type-calm' : diffTrueClock.behind }" style="font-size: .8em;">
+              {{ diffTrueClock.output  }}
             </span>
           </h2>
 
@@ -108,8 +108,8 @@
             <i class="icon ion-ios-clock-outline"></i>
             {{ meanTime | date: 'HH:mm:ss' }}
             &nbsp;
-            <span class="type type-calm" style="font-size: .8em;">
-              {{ diffMeanClock  }}
+            <span class="type" ng-class="{ 'type-balanced' : !diffMeanClock.behind, 'type-calm' : diffMeanClock.behind }" style="font-size: .8em;">
+              {{ diffMeanClock.output  }}
             </span>
           </h2>
 

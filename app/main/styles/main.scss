@@ -15,7 +15,7 @@ For example, you might change some of the default colors:
 $light:                           #fff !default;
 $stable:                          #f8f8f8 !default;
 
-$balanced:                        #66cc33 !default;
+$balanced:                        lighten(#66cc33, 20%) !default;
 $energized:                       #f0b840 !default;
 $assertive:                       #ef4e3a !default;
 
