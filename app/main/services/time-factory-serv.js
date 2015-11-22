@@ -189,9 +189,11 @@ angular.module('main')
     // get GMTtime
     var GMTtime = new Date(localSystemTime + localSystemTimezone * 1000); //
     // set clocktime
+    // if inhabited timezone
     if ( typeof rawOffset !== 'undefined' ) { // if over land
       var localTimeAnywhere = new Date(GMTtime.valueOf() + ((rawOffset + dstOffset) * 1000));
     }
+    // else judge time by the sun, as men do
     else {
       var localTimeAnywhere = new Date(GMTtime.valueOf() + (meanEpoc * 1000));
     }
