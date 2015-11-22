@@ -28,6 +28,7 @@
     "camelcase": [0, {"properties": "always"}],
     "no-undef": 0,
     "no-redeclare": 1,
+    "no-extra-semi": 1,
 
     // coding style
     "curly": 1,
