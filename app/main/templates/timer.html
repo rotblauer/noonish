@@ -63,7 +63,13 @@
     </ui-gmap-google-map>
 
 
-    <button class="button button-positive button-block icon ion-pinpoint" ng-click="setLocate()"></button>
+  <button class="button button-block icon ion-pinpoint" ng-click="chooseLocation(map.center)"></button>
+ <!--  <div class="row">
+    <div class="col col-50"><button class="button button-positive icon ion-pinpoint" ng-click="chooseLocation(map.center)"></button></div>
+    <div class="col col-50"><button class="button button-calm icon ion-pinpoint" ng-click="reCenter()"></button></div>
+  </div>
+ -->
+
 
 
     <!-- SLIDE PAGER -->
@@ -118,20 +124,6 @@
 
         </div>
       </div>
-
-      <div class="list skinny skinny-head">
-        <li class="item item-no-border item-toggle">
-           Daylight Savings Time
-            <span ng-if="x.dst">On</span>
-            <span ng-if="!x.dst">Off</span>
-           <label class="toggle toggle-energized">
-             <input type="checkbox" ng-model="x.dst" ng-click="initLocation()">
-             <div class="track">
-               <div class="handle"></div>
-             </div>
-           </label>
-        </li>
-      </div>
       </div>
 
     </ion-slide>
@@ -163,20 +155,6 @@
             </h2>
           </div>
 
-        </div>
-
-        <div class="list">
-          <li class="item item-no-border item-toggle">
-             Daylight Savings Time
-              <span ng-if="x.dst">On</span>
-              <span ng-if="!x.dst">Off</span>
-             <label class="toggle toggle-energized">
-               <input type="checkbox" ng-model="x.dst" ng-click="initLocation()">
-               <div class="track">
-                 <div class="handle"></div>
-               </div>
-             </label>
-          </li>
         </div>
       </div>
 

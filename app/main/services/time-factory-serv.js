@@ -1,6 +1,6 @@
 'use strict';
 angular.module('main')
-.factory('TimeFactory', function ($log) {
+.factory('TimeFactory', function ($log, $http, $q) {
 
   $log.log('Time Factory reporting for duty.');
 
@@ -50,100 +50,6 @@ angular.module('main')
     if (diffEOTMM < -10 ) {
       return diffEOTMM = '-' + (-1*diffEOTMM);
     }
-  }
-
-
-  // ////////////////////////////////////
-  // // Format true solar <-> clock diff.
-  // ////////////////////////////////////
-
-  function diffTrueClock (longitude) {
-    var lon = longitude;
-    var diff = diffMeanClock(longitude) - equationOfTime(); // in seconds
-    return diff;
-  }
-  // $scope.diffTrueTimeM = ( ($scope.diffTime - $scope.datEOTSeconds) / 60 );
-  // $scope.diffTrueTimeS = ($scope.diffTrueTimeM % 1);
-  // $scope.diffTrueTimeMM = ($scope.diffTrueTimeM - $scope.diffTrueTimeS);
-
-  // $scope.diffTrueTimeSS = ($scope.diffTrueTimeS * 60);
-  // $scope.diffTrueTimeSSS = ($scope.diffTrueTimeSS % 1);
-  // $scope.diffTrueTimeSSSS = ($scope.diffTrueTimeSS - $scope.diffTrueTimeSSS);
-
-  // // Decide whether number is positive or negative and small or big and
-
-  // // If the seconds is less than zero multiply by -1 to get rid of the prepended negative
-  // // (this is strictly for appearances)
-  // if ($scope.diffTrueTimeSSSS < 0) {
-  //   $scope.diffTrueTimeSSSS = $scope.diffTrueTimeSSSS * -1;
-  // }
-  // // If the seconds is less than 10 append a 0
-  // // ...so :09 instead of :9
-  // if ($scope.diffTrueTimeSSSS < 10) {
-  //   $scope.diffTrueTimeSSSS = '0' + $scope.diffTrueTimeSSSS;
-  // }
-  // // I just flip flopped the prepended + and - because Sven
-  // // and added the plus/minus appendage for bigger numbers too, like Sven's 77.
-  // if ($scope.diffTrueTimeMM < 10 && $scope.diffTrueTimeMM > 0) {
-  //   $scope.diffTrueTimeMM = '+0' + $scope.diffTrueTimeMM;
-  // }
-  // if ($scope.diffTrueTimeMM > 10) {
-  //   $scope.diffTrueTimeMM = '+' + $scope.diffTrueTimeMM;
-  // }
-
-  // if ($scope.diffTrueTimeMM > -10 && $scope.diffTrueTimeMM < 0) {
-  //   $scope.diffTrueTimeMM = '-0' + (-1*$scope.diffTrueTimeMM);
-  // }
-  // if ($scope.diffTrueTimeMM < -10 ) {
-  //   $scope.diffTrueTimeMM = '-' + (-1*$scope.diffTrueTimeMM);
-  // }
-  // ////////////////////////////////////
-  // // Format mean solar <-> clock diff.
-  // ////////////////////////////////////
-  // $scope.diffTimeM = ($scope.diffTime / 60);
-  // $scope.diffTimeS = ($scope.diffTimeM % 1);
-  // $scope.diffTimeMM = ($scope.diffTimeM - $scope.diffTimeS);
-
-  // $scope.diffTimeSS = ($scope.diffTimeS * 60);
-  // $scope.diffTimeSSS = ($scope.diffTimeSS % 1);
-  // $scope.diffTimeSSSS = ($scope.diffTimeSS - $scope.diffTimeSSS);
-
-  // // Decide whether number is positive or negative and small or big and
-
-  // // If the seconds is less than zero multiply by -1 to get rid of the prepended negative
-  // // (this is strictly for appearances)
-  // if ($scope.diffTimeSSSS < 0) {
-  //   $scope.diffTimeSSSS = $scope.diffTimeSSSS * -1;
-  // }
-  // // If the seconds is less than 10 append a 0
-  // // ...so :09 instead of :9
-  // if ($scope.diffTimeSSSS < 10) {
-  //   $scope.diffTimeSSSS = '0' + $scope.diffTimeSSSS;
-  // }
-  // // I just flip flopped the prepended + and - because Sven
-  // // and added the plus/minus appendage for bigger numbers too, like Sven's 77.
-  // if ($scope.diffTimeMM < 10 && $scope.diffTimeMM > 0) {
-  //   $scope.diffTimeMM = '+0' + $scope.diffTimeMM;
-  // }
-  // if ($scope.diffTimeMM > 10) {
-  //   $scope.diffTimeMM = '+' + $scope.diffTimeMM;
-  // }
-
-  // if ($scope.diffTimeMM > -10 && $scope.diffTimeMM < 0) {
-  //   $scope.diffTimeMM = '-0' + (-1*$scope.diffTimeMM);
-  // }
-  // if ($scope.diffTimeMM < -10 ) {
-  //   $scope.diffTimeMM = '-' + (-1*$scope.diffTimeMM);
-  // }
-
-  // Difference btw mean solar and clock.
-  function diffMeanClock (longitude, dst) {
-    var dayLightTime = dst ? 3600 : 0;
-    var epoc = new Date().getTimezoneOffset() * 60 + dayLightTime;
-    epoc = epoc * -1;
-    var meanEpoc = longitude * (86400 / 360);
-    var diffTime = meanEpoc - epoc;
-    return diffTime;
   }
 
   // Get cardinal day (1-366).
@@ -215,32 +121,96 @@ angular.module('main')
     return datEOTSeconds;
   }
 
-  // Mean local solar time.
-  ////////////////////////////////////
-  function getMeanSolar (longitude, dst) {
-    var dst = dst;
-    var lon = longitude;
-    var meanTime = new Date(new Date().valueOf() + diffMeanClock(lon, dst) * 1000); // Mean solar time by clock diff.
-    return meanTime; // <-- typeof === date
+  // ////////////////////////////////////
+  // // Format true solar <-> clock diff.
+  // ////////////////////////////////////
+
+  // Difference btw mean solar and clock.
+  // => compares timezone offset to mean local
+  // function differ (latitude, longitude, rawOffset, dstOffset) {
+  //   var epoc = rawOffset + dstOffset;
+  //   var meanEpoc = longitude * (86400 / 360);
+  //   var daDiffMeanClock = meanEpoc - epoc; // returner
+  //   var daDiffTrueClock = daDiffMeanClock - equationOfTime();
+  //   var diffs = {
+  //     meanVclock: daDiffMeanClock,
+  //     trueVclock: daDiffTrueClock
+  //   };
+  // }
+
+  // // Mean local solar time.
+  // ////////////////////////////////////
+  // function getMeanSolar (longitude, dst) {
+  //   // get users time and timezoneoffset
+  //   // find GMT
+  //   var dst = dst;
+  //   var lon = longitude;
+  //   var meanTime = new Date(new Date().valueOf() + diffMeanClock(lon, dst) * 1000); // Mean solar time by clock diff.
+  //   return meanTime; // <-- typeof === date
+  // }
+
+  // // True Solar Time.
+  // ////////////////////////////////////
+  // function getTrueSolar (longitude, dst) {
+  //   var dst = dst;
+  //   var lon = longitude;
+  //   var trueTime = new Date(new Date().valueOf() + diffMeanClock(lon, dst) * 1000 - equationOfTime() * 1000);
+  //   return trueTime; // <-- typeof === date
+  // }
+
+  //
+  function allTheTimes (latitude, longitude, rawOffset, dstOffset) {
+    // diffs
+    var epoc = rawOffset + dstOffset;
+    var meanEpoc = longitude * (86400 / 360); // seconds in a day divided by 360 degrees
+    var daDiffMeanClock = meanEpoc - epoc; // diff mean time -> longitude ratio :: timezone
+    var daDiffTrueClock = daDiffMeanClock - equationOfTime(); // " minus eot
+
+      var diffs = {
+        meanVclock: daDiffMeanClock,
+        trueVclock: daDiffTrueClock
+      };
+
+    // times
+    var localSystemTime = new Date().valueOf(); // assume their system clock is accurate to the time zone. iphono
+    var localSystemTimeZone = new Date().getTimezoneOffset().valueOf();
+    var GMTtime = localSystemTime - localSystemTimeZone;
+    var localTimeAnywhere = GMTtime + rawOffset + dstOffset;
+    var meanTimeThere = new Date(localTimeAnywhere + diffs.meanVclock * 1000); // typeof === Date
+    var trueTimeThere = new Date(localTimeAnywhere + diffs.trueVclock * 1000); // "
+
+      var times = {
+        meanTime: meanTimeThere,
+        trueTime: trueTimeThere
+      };
+
+    return { diffs: diffs, times: times };
   }
 
-  // True Solar Time.
-  ////////////////////////////////////
-  function getTrueSolar (longitude, dst) {
-    var dst = dst;
-    var lon = longitude;
-    var trueTime = new Date(new Date().valueOf() + diffMeanClock(lon, dst) * 1000 - equationOfTime() * 1000);
-    return trueTime; // <-- typeof === date
+  function getLocalTimeZoneGoogle (latitude, longitude) {
+    var defer = $q.defer();
+    var timestamp = Date.now() / 1000 | 0
+    var url = 'https://maps.googleapis.com/maps/api/timezone/json?location='+latitude+','+longitude+'&timestamp='+ timestamp +'&key=AIzaSyAetPBe1Frt6VMbMkfVdannWrZmpDcaTos';
+    $http({ method: 'GET', url: url })
+      .success(function (data, status, headers, config) {
+        defer.resolve({data: data});
+      })
+      .error(function (data, status, headers, config) {
+        defer.reject({error: 'Timezone not got.'});
+      });
+    return defer.promise;
   }
 
   return {
-    getMeanSolar: getMeanSolar,
-    getTrueSolar: getTrueSolar,
+    // getMeanSolar: getMeanSolar,
+    // getTrueSolar: getTrueSolar,
     cardinalDay: cardinalDay,
     equationOfTime: equationOfTime,
-    diffMeanClock: diffMeanClock,
-    diffTrueClock: diffTrueClock,
-    formatEOT: formatEOT
+    // diffMeanClock: diffMeanClock,
+    // diffTrueClock: diffTrueClock,
+    formatEOT: formatEOT,
+    getLocalTimeZoneGoogle: getLocalTimeZoneGoogle,
+    allTheTimes: allTheTimes
   };
 
 });
