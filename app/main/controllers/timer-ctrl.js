@@ -39,9 +39,11 @@ angular.module('main')
       TimeFactory.getLocalTimeZoneGoogle(position.coords.latitude, position.coords.longitude)
         .then(function timeZoneSuccess (data) {
           $log.log('Got timezone data:', data);
+
           $scope.dstOffset = data.data.dstOffset;
           $scope.rawOffset = data.data.rawOffset;
           $scope.timeZoneName = data.data.timeZoneName;
+
           tickTock(); // <-- TICK TOCKs initially called from here.
         }, function timeZoneError (error) {
           $log.log('Error getting time zone', error);
@@ -59,8 +61,8 @@ angular.module('main')
         // diffs
         // $scope.diffMeanClock = RiserFactory.timeString(TimeFactory.allTheTimes(position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset).diffs.meanVclock);
         // $scope.diffTrueClock = RiserFactory.timeString(TimeFactory.allTheTimes(position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset).diffs.trueVclock);
-        $scope.diffMeanClock = bundled.diffs.meanVclock;
-        $scope.diffTrueClock = bundled.diffs.trueVclock;
+        $scope.diffMeanClock = RiserFactory.betterTimeString(bundled.diffs.meanVclock);
+        $scope.diffTrueClock = RiserFactory.betterTimeString(bundled.diffs.trueVclock);
       }
     }
     function tickTock () {

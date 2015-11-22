@@ -232,8 +232,13 @@ angular.module('main')
   function timeString(minutes, flag)
   // timeString returns a zero-padded string (HH:MM:SS) given time in minutes
   // flag=2 for HH:MM, 3 for HH:MM:SS
+
+  // ACTUALLY, it's getting time in seconds, but it's all good cuz ...
+    // we aint counting HH:MM:SS, we counting MM:SS, so the code monkeys think the factorial factors
+    // (it thinks its giving HH:SS)
   {
-    if ( (minutes >= 0) && (minutes < 1440) ) {
+    // if ( (minutes >= 0) && (minutes < 1440) ) { // 1440 minutes in 24 hours
+    if ( (minutes < 1440) ) { // 1440 minutes in 24 hours
       var floatHour = minutes / 60.0;
       var hour = Math.floor(floatHour);
       var floatMinute = 60.0 * (floatHour - Math.floor(floatHour));
@@ -245,7 +250,9 @@ angular.module('main')
         minute += 1
       }
       if ((flag == 2) && (second >= 30)) minute++;
-      if (minute > 59) {
+
+      // if (minute > 59) {
+      if ((minute > 59) || (minute < -59)) {
         minute = 0
         hour += 1
       }
@@ -253,6 +260,65 @@ angular.module('main')
       if (flag > 2) output = output + ":" + zeroPad(second,2);
     } else {
       var output = "error"
+    }
+    return output;
+  }
+  function betterTimeString(seconds) {
+
+    var isNeg;
+    // if seconds less than a day
+    if ( (seconds < 86400) && (seconds > -86400) ) {
+
+      $log.log('seconds', seconds);
+      // positive
+      if ( seconds < 0 ) {
+        isNeg = true;
+        seconds = -seconds;
+      }
+      var floatHour = seconds / 3600.0;
+      var hour = Math.floor(floatHour); // Math.floor() => largest integer less than or equal to a given number.
+
+      var floatMinute = 60.0 * (floatHour - hour);
+      var minute = Math.floor(floatMinute);
+
+      var floatSecond = 60.0 * (floatMinute - minute);
+      var second = Math.floor(floatSecond + 0.01);
+      $log.log(hour, minute, second);
+
+      if ( second > 59 ) {
+        second =  second - 60;
+        minute++;
+      }
+      if ( minute > 59 ) {
+        minute = minute - 60;
+        if ( isNeg ) {
+          hour -= 1;
+        } else {
+          hour += 1;
+        }
+
+      }
+
+      if ( hour !== 0 ) {
+        if ( isNeg ) {
+          var output = '-'+hour + ':' + zeroPad(minute,2) + ':' + zeroPad(second,2);
+        }
+        else {
+          var output = hour + ':' + zeroPad(minute,2) + ':' + zeroPad(second,2);
+        }
+
+      } else {
+        if ( isNeg ) {
+          var output = '-'+zeroPad(minute,2) + ':' + zeroPad(second,2);
+        }
+        else {
+          var output = zeroPad(minute,2) + ':' + zeroPad(second,2);
+        }
+
+      }
+    }
+    else {
+      var output = 'A long ass time.';
     }
     return output;
   }
@@ -635,6 +701,7 @@ angular.module('main')
     calcTimeJulianCent: calcTimeJulianCent,
     solarNoon: calcSolNoon,
     timeString: timeString,
+    betterTimeString: betterTimeString,
     calcSunriseSet: calcSunriseSet,
     howHighInSky: howHighInSky,
     getDeclination: getDeclination
