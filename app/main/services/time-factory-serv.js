@@ -1,6 +1,6 @@
 'use strict';
 angular.module('main')
-.factory('TimeFactory', function ($log, $http, $q) {
+.factory('TimeFactory', function ($log, $http, $q, RiserFactory) {
 
   $log.log('Time Factory reporting for duty.');
 
@@ -157,32 +157,47 @@ angular.module('main')
   //   var trueTime = new Date(new Date().valueOf() + diffMeanClock(lon, dst) * 1000 - equationOfTime() * 1000);
   //   return trueTime; // <-- typeof === date
   // }
-
+  var n = 0;
   //
   function allTheTimes (latitude, longitude, rawOffset, dstOffset) {
     // diffs
+    if ( n < 10 ) {
+      $log.log('TimeFactory.allTheTimes :: latitude, longitude, rawOffset, dstOffset', latitude, longitude, rawOffset, dstOffset);
+    }
     var epoc = rawOffset + dstOffset;
     var meanEpoc = longitude * (86400 / 360); // seconds in a day divided by 360 degrees
     var daDiffMeanClock = meanEpoc - epoc; // diff mean time -> longitude ratio :: timezone
     var daDiffTrueClock = daDiffMeanClock - equationOfTime(); // " minus eot
 
       var diffs = {
-        meanVclock: daDiffMeanClock,
-        trueVclock: daDiffTrueClock
+        meanVclock: daDiffMeanClock, // seconds
+        trueVclock: daDiffTrueClock // seconds
       };
 
     // times
+
+    // get system time
     var localSystemTime = new Date().valueOf(); // assume their system clock is accurate to the time zone. iphono
-    var localSystemTimeZone = new Date().getTimezoneOffset().valueOf();
-    var GMTtime = localSystemTime - localSystemTimeZone;
-    var localTimeAnywhere = GMTtime + rawOffset + dstOffset;
+    // $log.log('localSystemTime', localSystemTime); // 1448207059235
+    var localSystemTimezone = new Date().getTimezoneOffset().valueOf() * 60 ; // seconds
+    // var localSystemTimezoneSeconds = localSystemTimezone * 60;
+    // $log.log('localSystemTimeZone', localSystemTimezoneSeconds);
+
+    var GMTtime = new Date(localSystemTime + localSystemTimezone * 1000); //
+
+    $log.log('TimeFactory.allThetimes : GMTtime', GMTtime);
+
+    var localTimeAnywhere = new Date(GMTtime.valueOf() + ((rawOffset + dstOffset) * 1000));
+    $log.log('TimeFactory.allThetimes : localtime', localTimeAnywhere);
     var meanTimeThere = new Date(localTimeAnywhere + diffs.meanVclock * 1000); // typeof === Date
     var trueTimeThere = new Date(localTimeAnywhere + diffs.trueVclock * 1000); // "
 
       var times = {
+        localTime: localTimeAnywhere,
         meanTime: meanTimeThere,
         trueTime: trueTimeThere
       };
+    n += 1;
 
     return { diffs: diffs, times: times };
   }

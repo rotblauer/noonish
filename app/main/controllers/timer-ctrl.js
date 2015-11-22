@@ -35,13 +35,14 @@ angular.module('main')
     }
 
     function getTimeZone (position) {
+      // $log.log('getTimeZone for ', position); // OK
       TimeFactory.getLocalTimeZoneGoogle(position.coords.latitude, position.coords.longitude)
         .then(function timeZoneSuccess (data) {
           $log.log('Got timezone data:', data);
           $scope.dstOffset = data.data.dstOffset;
           $scope.rawOffset = data.data.rawOffset;
           $scope.timeZoneName = data.data.timeZoneName;
-          tickTock();
+          tickTock(); // <-- TICK TOCKs initially called from here.
         }, function timeZoneError (error) {
           $log.log('Error getting time zone', error);
         });
@@ -49,21 +50,28 @@ angular.module('main')
     function timesAndDiffs () {
       var position = $scope.position;
       if (position !== null) {
+        var bundled = TimeFactory.allTheTimes(position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset);
+
         // times
-        $scope.meanTime = TimeFactory.allTheTimes(position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset).times.meanTime;
-        $scope.trueTime = TimeFactory.allTheTimes(position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset).times.trueTime;
+        $scope.clock = bundled.times.localTime;
+        $scope.meanTime = bundled.times.meanTime;
+        $scope.trueTime = bundled.times.trueTime;
         // diffs
         // $scope.diffMeanClock = RiserFactory.timeString(TimeFactory.allTheTimes(position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset).diffs.meanVclock);
         // $scope.diffTrueClock = RiserFactory.timeString(TimeFactory.allTheTimes(position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset).diffs.trueVclock);
-        $scope.diffMeanClock = TimeFactory.allTheTimes(position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset).diffs.meanVclock;
-        $scope.diffTrueClock = TimeFactory.allTheTimes(position.coords.latitude, position.coords.longitude, $scope.rawOffset, $scope.dstOffset).diffs.trueVclock;
+        $scope.diffMeanClock = bundled.diffs.meanVclock;
+        $scope.diffTrueClock = bundled.diffs.trueVclock;
       }
     }
     function tickTock () {
-      $scope.clock = new Date(); // re new clock time.
+      // $scope.clock = TimeFactory.allTheTimes(); // re new clock time.
       timesAndDiffs();
       $timeout(tickTock, 1000); // calls itself every second
     }
+
+    $scope.$watch('position', function (val) {
+      $log.log('$scope.position changed to ', val);
+    });
 
     ////////////////////////////////////////////////////////////
     // Locations and mappery.
@@ -82,7 +90,7 @@ angular.module('main')
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
         },
-        zoom: 10,
+        zoom: 5,
         styles: styleArray,
         options: {
           // disableDefaultUI: true
