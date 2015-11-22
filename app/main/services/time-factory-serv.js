@@ -188,9 +188,10 @@ angular.module('main')
     $log.log('TimeFactory.allThetimes : GMTtime', GMTtime);
 
     var localTimeAnywhere = new Date(GMTtime.valueOf() + ((rawOffset + dstOffset) * 1000));
+
     $log.log('TimeFactory.allThetimes : localtime', localTimeAnywhere);
-    var meanTimeThere = new Date(localTimeAnywhere + diffs.meanVclock * 1000); // typeof === Date
-    var trueTimeThere = new Date(localTimeAnywhere + diffs.trueVclock * 1000); // "
+    var meanTimeThere = new Date(localTimeAnywhere.valueOf() + diffs.meanVclock * 1000); // typeof === Date
+    var trueTimeThere = new Date(localTimeAnywhere.valueOf() + diffs.trueVclock * 1000); // "
 
       var times = {
         localTime: localTimeAnywhere,
