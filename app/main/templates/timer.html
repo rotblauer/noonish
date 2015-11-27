@@ -73,6 +73,17 @@
     </div>
   </div>
 
+  <div class="row">
+    <p class="type type-calm">
+      JD: {{ JD }} <br>
+      localTotalJD: {{ localTotalJD }}  <br>
+      diff JD - localTotalJD: {{ JD - localTotalJD }} <br>
+      TimeFactory eot: {{ TFEOT }} <br>
+      RiserFactory eot: {{ calcEquationOfTime }}
+
+    </p>
+  </div>
+
  <!--  <div class="row">
     <div class="col col-50"><button class="button button-positive icon ion-pinpoint" ng-click="chooseLocation(map.center)"></button></div>
     <div class="col col-50"><button class="button button-calm icon ion-pinpoint" ng-click="reCenter()"></button></div>
@@ -98,7 +109,7 @@
         <div class="col col-100">
 
           <p class="type type-muted">
-            True solar time
+            Apparent solar time
           </p>
           <h2 class="type skinny skinny-head type-positive ">
             <i class="icon ion-ios-time-outline"></i>
@@ -111,7 +122,7 @@
 
 
           <p class="type type-muted">
-            Local mean time
+             Mean solar time
           </p>
           <h2 class="type skinny skinny-head type-positive">
 

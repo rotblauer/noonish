@@ -36,25 +36,38 @@ angular.module('main')
     // Sunburners.
     ////////////////////////////////////////////////////////////
     var d = new Date();
+
     $scope.day = d.getDate();
     $scope.month = d.getMonth();
     $scope.year = d.getFullYear();
+
+    $scope.hr = d.getHours();
+    $scope.mn = d.getMinutes();
+    $scope.sex = d.getSeconds();
+    $log.log('hr/mn/sex', $scope.hr, $scope.mn, $scope.sex);
+
+
     $scope.JD = RiserFactory.getJD($scope.day, $scope.month, $scope.year); // (day, month, year)
 
-    // function morning (latt, lngg, tzz) {
-    //   var lat = latt;
-    //   var lon = lngg;
-    //   var tz = tzz;
-    //   var dst = $scope.x.dst;
-    //   $scope.sunrise = RiserFactory.calcSunriseSet(1, $scope.JD, lat, lon, tz, dst); // rise[1:morn, 0:eve], JD, latitude, longitude, timezone, dst
-    // }
-    // function evening (latt, lngg, tzz) {
-    //   var lat = latt;
-    //   var lon = lngg;
-    //   var tz = tzz;
-    //   var dst = $scope.x.dst;
-    //   $scope.sunset = RiserFactory.calcSunriseSet(0, $scope.JD, lat, lon, tz, dst); // rise[1:morn, 0:eve], JD, latitude, longitude, timezone, dst
-    // }
+
+    // jd + local time (== minutes today) - timezone/24 hrs
+
+    ////////////////////////////////////////////////////////////
+    // TESTERS.
+    ////////////////////////////////////////////////////////////
+
+    function compareEOTs () {
+
+      $scope.localTimeMinRatio = RiserFactory.getTimeLocal($scope.hr, $scope.mn, $scope.sex, $scope.dstOffset);
+      $scope.localTotalJD = $scope.JD + ($scope.localTimeMinRatio / 1440) - ($scope.rawOffset / 24);
+
+      // $scope.JD
+      $scope.calcTimeJulianCent = RiserFactory.calcTimeJulianCent($scope.localTotalJD); // arg total jd, return T // ~$scope.JD
+      // // $scope.calcJDFromJulianCent = RiserFactory.calcJDFromJulianCent($scope.calcTimeJulianCent); // arg t, return
+      $scope.TFEOT = TimeFactory.equationOfTime() / 60;
+      $log.log('TFEOT', $scope.TFEOT );
+      $scope.calcEquationOfTime = RiserFactory.calcEquationOfTime($scope.calcTimeJulianCent);
+    }
 
     ////////////////////////////////////////////////////////////
     // Timers.
@@ -68,6 +81,7 @@ angular.module('main')
           $scope.dstOffset = data.data.dstOffset;
           $scope.rawOffset = data.data.rawOffset;
           $scope.timeZoneName = data.data.timeZoneName;
+          compareEOTs();
           $scope.mapMoved = false;
           solarEventTimes(); // only called once
           tickTock(); // <-- TICK TOCKs initially called from here.

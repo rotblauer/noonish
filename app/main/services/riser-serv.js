@@ -361,30 +361,6 @@ angular.module('main')
     return output;
   }
 
-  // // function readTextBox(inputId, numchars, intgr, pad, min, max, def)
-  // // {
-  // //   var number = document.getElementById(inputId).value.substring(0,numchars)
-  // //   if (intgr) {
-  // //     number = Math.floor(parseFloat(number))
-  // //   } else {  // float
-  // //     number = parseFloat(number)
-  // //   }
-  // //   if (number < min) {
-  // //     number = min
-  // //   } else if (number > max) {
-  // //     number = max
-  // //   } else if (number.toString() == "NaN") {
-  // //     number = def
-  // //   }
-  // //   if ((pad) && (intgr)) {
-  // //     document.getElementById(inputId).value = zeroPad(number,2)
-  // //   } else {
-  // //     document.getElementById(inputId).value = number
-  // //   }
-  // //   return number
-  // // }
-
-
   // var monthList = [
   //   {name: "January",   numdays: 31, abbr: "Jan"},
   //   {name: "February",  numdays: 28, abbr: "Feb"},
@@ -399,38 +375,6 @@ angular.module('main')
   //   {name: "November",  numdays: 30, abbr: "Nov"},
   //   {name: "December",  numdays: 31, abbr: "Dec"},
   // ];
-
-
-  // Initializing and grabbering.
-  //////////////////////////////////////////////////////////
-
-  // function getTimeLocal()
-  // {
-  //   // var dochr = readTextBox("hrbox", 2, 1, 1, 0, 23, 12)
-  //   // var docmn = readTextBox("mnbox", 2, 1, 1, 0, 59, 0)
-  //   // var docsc = readTextBox("scbox", 2, 1, 1, 0, 59, 0)
-  //   // var docpm = document.getElementById("pmbox").checked
-  //   // var docdst = document.getElementById("dstCheckbox").checked
-
-  //   // var dochr = hour;
-  //   // var docmn = minute;
-  //   // var docsc = second;
-  //   var d = new Date();
-  //   var dochr = d.getHours();
-  //   var docmn = d.getMinutes();
-  //   var docsc = d.getSeconds();
-
-  //   // var docpm =
-  //   var docdst = dst;
-  //   // if ( (docpm) && (dochr < 12) ) {
-  //   //   dochr += 12
-  //   // }
-  //   if (docdst) {
-  //     dochr -= 1
-  //   }
-  //   var mins = dochr * 60 + docmn + docsc/60.0
-  //   return mins
-  // }
 
   function getJD (day, month, year) {
     var docday = day;
@@ -461,6 +405,26 @@ angular.module('main')
     var B = 2 - A + Math.floor(A/4);
     var JD = Math.floor(365.25*(docyear + 4716)) + Math.floor(30.6001*(docmonth+1)) + docday + B - 1524.5;
     return JD;
+  }
+
+  function getTimeLocal(hr, min, sex, dst)
+  {
+    $log.log('dst', dst);
+    // var dochr = readTextBox("hrbox", 2, 1, 1, 0, 23, 12)
+    // var docmn = readTextBox("mnbox", 2, 1, 1, 0, 59, 0)
+    // var docsc = readTextBox("scbox", 2, 1, 1, 0, 59, 0)
+    // var docpm = document.getElementById("pmbox").checked
+    // var docdst = document.getElementById("dstCheckbox").checked
+    var dochr = hr;
+    var docmn = min;
+    var docsc = sex;
+    dochr -= dst;
+    // if (docdst) {
+    //   dochr -= 1
+    // }
+    var mins = dochr * 60 + docmn + docsc/60.0
+    $log.log('totalminstoday', mins);
+    return mins
   }
 
 
@@ -680,7 +644,7 @@ angular.module('main')
   //   var tz = readTextBox("zonebox", 5, 0, 0, -14, 13, 0)
     // var tz = new Date().getTimeZoneOffset();
   //   var dst = document.getElementById("dstCheckbox").checked
-  //   var total = jday + tl/1440.0 - tz/24.0
+  //   var total = jday + tl/1440.0 - tz/24.0 // <-- *****
   //   var T = calcTimeJulianCent(total)
   //   var lat = parseFloat(document.getElementById("latbox").value.substring(0,9))
   //   var lng = parseFloat(document.getElementById("lngbox").value.substring(0,10))
@@ -706,6 +670,8 @@ angular.module('main')
 
   return {
     getJD: getJD,
+    getTimeLocal: getTimeLocal,
+    calcEquationOfTime, calcEquationOfTime,
     calcTimeJulianCent: calcTimeJulianCent,
     solarNoon: calcSolNoon,
     timeString: timeString,
