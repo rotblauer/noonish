@@ -46,9 +46,8 @@ angular.module('main')
     $scope.sex = d.getSeconds();
     $log.log('hr/mn/sex', $scope.hr, $scope.mn, $scope.sex);
 
-
+    // JD -> Julian Day *Number*
     $scope.JD = RiserFactory.getJD($scope.day, $scope.month, $scope.year); // (day, month, year)
-
 
     // jd + local time (== minutes today) - timezone/24 hrs
 
@@ -58,14 +57,23 @@ angular.module('main')
 
     function compareEOTs () {
 
+      // Fraction of day
       $scope.localTimeMinRatio = RiserFactory.getTimeLocal($scope.hr, $scope.mn, $scope.sex, $scope.dstOffset);
-      $scope.localTotalJD = $scope.JD + ($scope.localTimeMinRatio / 1440) - ($scope.rawOffset / 24);
+      $log.info($scope.localTimeMinRatio);
 
-      // $scope.JD
+      // Julian Date fraction -> fraction of day since preceding noon GMT
+      $scope.localTotalJD = $scope.JD + ($scope.localTimeMinRatio / 1440) - ($scope.rawOffset / 24);
+      $log.info($scope.localTotalJD);
+      // Julian date. JDN + ^
       $scope.calcTimeJulianCent = RiserFactory.calcTimeJulianCent($scope.localTotalJD); // arg total jd, return T // ~$scope.JD
       // // $scope.calcJDFromJulianCent = RiserFactory.calcJDFromJulianCent($scope.calcTimeJulianCent); // arg t, return
-      $scope.TFEOT = TimeFactory.equationOfTime() / 60;
-      $log.log('TFEOT', $scope.TFEOT );
+      $log.info('$scope.calcTimeJulianCent', $scope.calcTimeJulianCent);
+
+      // Time Factory EOT
+      $scope.TFEOT = TimeFactory.equationOfTime() / 60.0000;
+
+
+      //
       $scope.calcEquationOfTime = RiserFactory.calcEquationOfTime($scope.calcTimeJulianCent);
     }
 

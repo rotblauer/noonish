@@ -1,6 +1,6 @@
 'use strict';
 angular.module('main')
-.factory('TimeFactory', function ($log, $http, $q, RiserFactory) {
+.factory('TimeFactory', function ($log, $http, $q) {
 
   $log.log('Time Factory reporting for duty.');
 
