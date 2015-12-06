@@ -37,13 +37,13 @@ angular.module('main')
     ////////////////////////////////////////////////////////////
     var d = new Date();
 
-    $scope.day = d.getDate();
+    $scope.day   = d.getDate();
     $scope.month = d.getMonth();
-    $scope.year = d.getFullYear();
+    $scope.year  = d.getFullYear();
 
-    $scope.hr = d.getHours();
-    $scope.mn = d.getMinutes();
-    $scope.sex = d.getSeconds();
+    $scope.hr    = d.getHours();
+    $scope.mn    = d.getMinutes();
+    $scope.sex   = d.getSeconds();
     $log.log('hr/mn/sex', $scope.hr, $scope.mn, $scope.sex);
 
     // JD -> Julian Day *Number*
@@ -58,23 +58,25 @@ angular.module('main')
     function compareEOTs () {
 
       // Fraction of day
-      $scope.localTimeMinRatio = RiserFactory.getTimeLocal($scope.hr, $scope.mn, $scope.sex, $scope.dstOffset);
+      $scope.localTimeMinRatio          = RiserFactory.getTimeLocal($scope.hr, $scope.mn, $scope.sex, $scope.dstOffset);
       $log.info($scope.localTimeMinRatio);
 
       // Julian Date fraction -> fraction of day since preceding noon GMT
-      $scope.localTotalJD = $scope.JD + ($scope.localTimeMinRatio / 1440) - ($scope.rawOffset / 24);
+      $scope.localTotalJD               = $scope.JD + ($scope.localTimeMinRatio / 1440) - ($scope.rawOffset / 24);
       $log.info($scope.localTotalJD);
+
       // Julian date. JDN + ^
-      $scope.calcTimeJulianCent = RiserFactory.calcTimeJulianCent($scope.localTotalJD); // arg total jd, return T // ~$scope.JD
+      $scope.calcTimeJulianCent         = RiserFactory.calcTimeJulianCent($scope.localTotalJD); // arg total jd, return T // ~$scope.JD
       // // $scope.calcJDFromJulianCent = RiserFactory.calcJDFromJulianCent($scope.calcTimeJulianCent); // arg t, return
       $log.info('$scope.calcTimeJulianCent', $scope.calcTimeJulianCent);
 
       // Time Factory EOT
-      $scope.TFEOT = TimeFactory.equationOfTime() / 60.0000;
+      $scope.TFEOT                      = TimeFactory.equationOfTime() / 60.0000;
 
 
       //
-      $scope.calcEquationOfTime = RiserFactory.calcEquationOfTime($scope.calcTimeJulianCent);
+      $scope.calcEquationOfTimeJD       = RiserFactory.calcEquationOfTime($scope.JD); //calcTimeJulianCent
+      $scope.calcEquationOfTimeJC       = RiserFactory.calcEquationOfTime($scope.calcTimeJulianCent); //calcTimeJulianCent
     }
 
     ////////////////////////////////////////////////////////////

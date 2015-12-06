@@ -671,7 +671,7 @@ angular.module('main')
   return {
     getJD: getJD,
     getTimeLocal: getTimeLocal,
-    calcEquationOfTime, calcEquationOfTime,
+    calcEquationOfTime: calcEquationOfTime,
     calcTimeJulianCent: calcTimeJulianCent,
     solarNoon: calcSolNoon,
     timeString: timeString,

@@ -54,12 +54,23 @@ angular.module('main')
 
   // Get cardinal day (1-366).
   // http://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366
+
+  // unit -> day
   function cardinalDay () {
     var now = new Date();
     var start = new Date(now.getFullYear(), 0, 0);
     var diff = now - start;
     var oneDay = 1000 * 60 * 60 * 24;
     var cDay = Math.floor(diff / oneDay); // Cardinal day.
+    return cDay;
+  }
+
+  function cardinalDayWithFraction () {
+    var now = new Date();
+    var start = new Date(now.getFullYear(), 0, 0);
+    var diff = now - start;
+    var oneDay = 1000 * 60 * 60 * 24;
+    var cDay = diff / oneDay; // Cardinal day.
     return cDay;
   }
 
@@ -80,7 +91,7 @@ angular.module('main')
     // var diff = now - start;
     // var oneDay = 1000 * 60 * 60 * 24;
     // Cardinal day.
-    var DDaze = cardinalDay(); // <-- moved to helper ^
+    var DDaze = cardinalDayWithFraction(); // <-- moved to helper ^ // cardinalDay
 
     // A is the angle the earth would move on its orbit at its average speed from the December solstice to date D.
     // A = W*(D+10)
