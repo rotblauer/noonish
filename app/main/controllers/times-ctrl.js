@@ -3,10 +3,12 @@
 
 'use strict';
 angular.module('main')
-.controller('TimesCtrl', function ($scope, $log, $timeout, currentLocation, TimeFactory, RiserFactory, GeolocationFactory) {
+.controller('TimesCtrl', function ($scope, $log, $timeout, $q, currentLocation, TimeFactory, RiserFactory, GeolocationFactory) {
 
   $scope.data = {};
-  $scope.data.location = currentLocation;
+  $scope.data.inUseLocation = GeolocationFactory.inUseLocation;
+  $scope.data.location = GeolocationFactory.inUseLocation.location;
+
   $log.log('data.location', $scope.data.location);
 
   $scope.tickIndex = 0;
@@ -22,6 +24,7 @@ angular.module('main')
   // The other Date instance lives in the TimeFactory.
   function updateDate() {
     var date = new Date();
+    date.setTime(date.getTime() + $scope.data.timezone.data.rawOffset / 60000);
     var day = date.getDate();
     var month = date.getMonth() + 1;
     var year = date.getYear();
@@ -47,10 +50,12 @@ angular.module('main')
   // $scope.data.eot = TimeFactory.equationOfTime();
 
   function tickable() {
-    if ($scope.tickIndex % 30 === 0) { updateLocation(); } // it's ok if this is out of sync with the scope a little
+    if ($scope.tickIndex % 30 === 0 && $scope.data.inUseLocation.isActual) {
+      updateLocation();
+    } // it's ok if this is out of sync with the scope a little
 
     $scope.tickIndex++;
-    $log.log('Ticking @ ', $scope.tickIndex);
+    // $log.log('Ticking @ ', $scope.tickIndex);
 
     $scope.data.times = TimeFactory.allTheTimes(
       $scope.data.location.coords.latitude,
@@ -72,13 +77,23 @@ angular.module('main')
   }
 
   function getTimeZone(loc) {
-    return TimeFactory.getLocalTimeZoneGoogle(loc.coords.latitude, loc.coords.longitude);
+    var defer = $q.defer();
+    if (typeof $scope.data.inUseLocation['timezone'] === 'undefined') {
+      TimeFactory.getLocalTimeZoneGoogle(loc.coords.latitude, loc.coords.longitude).then(function(tz) {
+        GeolocationFactory.inUseLocation['timezone'] = tz;
+        defer.resolve(tz);
+      });
+    } else {
+      defer.resolve($scope.data.inUseLocation['timezone']);
+    }
+    return defer.promise;
   }
 
   function init() {
-    updateEOT(); // set time
-    getTimeZone(currentLocation).then(function(tz) {
+
+    getTimeZone($scope.data.location).then(function(tz) {
       $scope.data.timezone = tz;
+      updateEOT(); // set time
     }).finally(tickTock);
   }
 
@@ -86,7 +101,13 @@ angular.module('main')
     tickable();
     $timeout(tickTock, 1000); // calls itself every second
   }
-  init();
+
+  $scope.$on('$ionicView.enter', function() {
+    $scope.data.inUseLocation = GeolocationFactory.inUseLocation;
+    $scope.data.location = GeolocationFactory.inUseLocation.location;
+    init();
+  });
+
 
 
 });

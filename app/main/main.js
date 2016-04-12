@@ -21,7 +21,11 @@ angular.module('main', [
       resolve: {
         currentLocation: function(GeolocationFactory) {
           return GeolocationFactory.getLocation().then(function(loc) {
-            return loc;
+            // return loc;
+            return GeolocationFactory.inUseLocation = {
+              location: loc,
+              isActual: true
+            };
           });
         }
         // local: function($log, GeolocationFactory, TimeFactory) {

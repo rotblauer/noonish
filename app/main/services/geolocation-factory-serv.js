@@ -4,6 +4,7 @@ angular.module('main')
 
   // $log.log('Hello from your Service: GeolocationFactory in module main');
 
+  var inUseLocation = {};
 
   function getLocation () {
     var defer = $q.defer();
@@ -46,7 +47,8 @@ angular.module('main')
 
   return {
     getLocation: getLocation,
-    getNearByCity: getNearByCity
+    getNearByCity: getNearByCity,
+    inUseLocation: inUseLocation
   };
 
 });

@@ -44,8 +44,7 @@ angular.module('main')
         // icon: mapIcon
       }
     };
-    getCity(pos);
-    getTimeZone(pos.coords.latitude, pos.coords.longitude);
+    handleLocation(pos, false);
   }
 
   function mapClicked(mapModel, eventName, originalEventArgs) {
@@ -84,6 +83,7 @@ angular.module('main')
     TimeFactory.getLocalTimeZoneGoogle(lat, lng)
       .then(function gotTimezone(tz) {
         $scope.data.timezone = tz;
+        GeolocationFactory.inUseLocation['timezone'] = tz;
       })
       .catch(function timeZoneError(err) {
         $scope.data.timezone = {
@@ -106,10 +106,12 @@ angular.module('main')
     } else {
       $scope.locationActual = false;
     }
-
-
     getCity(position);
     getTimeZone(position.coords.latitude, position.coords.longitude);
+    GeolocationFactory.inUseLocation = {
+      location: position,
+      isActual: shouldInitMap
+    };
   }
 
   $scope.findMe = function() {
@@ -136,7 +138,7 @@ angular.module('main')
   }
 
   // init
-  handleLocation(currentLocation, true);
+  handleLocation(GeolocationFactory.inUseLocation.location, true);
 
 
 
