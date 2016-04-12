@@ -1,0 +1,143 @@
+<ion-view view-name="tabs-times" view-title="{{ data.string }}">
+
+  <!-- do you want padding? -->
+  <ion-content class="padding">
+
+    <style>
+      h1.time-display {
+        margin-top: -5px;
+        font-size: 10vw;
+      }
+      p.type-label{
+        margin-bottom: -5px;
+      }
+    </style>
+
+
+    <!-- <p class="type type-positive type-label">
+      <i class="icon ion-ios-clock"></i>
+      Local clock time
+    </p>
+    <h1 class="time-display">
+      {{ data.times.times.localTime | date: 'HH:mm:ss' }}
+    </h1>
+
+
+    <p class="type type-positive type-label">
+      <i class="icon ion-ios-clock"></i>
+      Local mean time
+    </p>
+    <h1 class="time-display">
+      {{ data.times.times.meanTime | date: 'HH:mm:ss' }}
+    </h1>
+
+
+    <p class="type type-positive type-label">
+      <i class="icon ion-ios-clock"></i>
+      Precise local time
+    </p>
+    <h1 class="time-display">
+      {{ data.times.times.trueTime | date: 'HH:mm:ss' }}
+    </h1>
+
+
+    <p class="type type-positive type-label">
+      <i class="icon ion-ios-clock"></i>
+      Calculated EOT
+    </p>
+    <h1 class="time-display">
+      {{ data.EOT * 60 | number:1 }} seconds
+    </h1> -->
+
+    <!-- ******************************************************** -->
+
+    <div>
+    <div class="row skinny skinny-ass">
+
+      <style>
+        h2 {
+          margin-bottom: 30px;
+        }
+      </style>
+
+      <div class="col col-100">
+
+        <p class="type type-muted">
+          Precise local solar time
+        </p>
+        <h2 class="type skinny skinny-head type-positive ">
+          <i class="icon ion-ios-time-outline"></i>
+          {{ data.times.times.trueTime | date: 'HH:mm:ss' }}
+          &nbsp;
+          <span class="type" ng-class="{ 'type-balanced' : !data.diffTrueClock.behind, 'type-calm' : data.diffTrueClock.behind }" style="font-size: .8em;">
+            {{ data.diffTrueClock.output  }}
+          </span>
+        </h2>
+
+
+        <p class="type type-muted">
+           Mean local solar time
+        </p>
+        <h2 class="type skinny skinny-head type-positive">
+
+          <i class="icon ion-ios-clock-outline"></i>
+          {{ data.times.times.meanTime | date: 'HH:mm:ss' }}
+          &nbsp;
+          <span class="type" ng-class="{ 'type-balanced' : !data.diffMeanClock.behind, 'type-calm' : data.diffMeanClock.behind }" style="font-size: .8em;">
+            {{ data.diffMeanClock.output  }}
+          </span>
+        </h2>
+
+        <p class="type type-muted">
+          Clock time ({{ data.timezone.data.timeZoneName || 'measured longitudinally'}})
+        </p>
+        <h2 class="type skinny skinny-head type-muted">
+
+          <i class="icon ion-ios-clock-outline"></i>
+          {{ data.times.times.localTime | date: 'HH:mm:ss' }}
+        </h2>
+
+        <p class="type type-muted">
+          Calculated equation of time
+        </p>
+        <h2 class="skinny skinny-head" >
+          <i class="icon type type-muted ion-ios-clock-outline"></i>
+          <span class="type" ng-class="{ 'type-balanced' : !data.presentableEOT.behind, 'type-calm' : data.presentableEOT.behind }">{{ data.presentableEOT.output }}</span>
+
+        </h2>
+
+      </div>
+    </div>
+    </div>
+
+    <!-- ******************************************************** -->
+
+ <!--    <div class="row skinny skinny-ass">
+      <h3>
+        Let's start with the clock time, that's:
+          <span class="type type-muted">
+          <i class="icon ion-ios-time-outline"></i>
+          {{ data.times.times.trueTime | date: 'HH:mm:ss' }}</span>.
+
+          <br>
+
+          This time is the same for everyone in the
+          <span class="type type-positive">{{ data.timezone.data.timeZoneName }} timezone</span>. It's an approximation we use so that we know what <span class="type type-balanced">being on time</span class="type type-balanced"> means.
+
+          <br>
+
+          Practically speaking, time measures where the sun is relative to the earth.
+      </h3>
+
+    </div> -->
+
+    <!-- ******************************************************** -->
+
+   <!--  <strong>data:</strong>
+    <p>{{ data | json }}</p>
+
+    <hr> -->
+
+
+  </ion-content>
+</ion-view>

@@ -19,14 +19,46 @@ angular.module('main', [
       templateUrl: 'main/templates/tabs.html',
       controller: 'MainCtrl as mainCtrl',
       resolve: {
-        currentLocation: function($log, GeolocationFactory) {
+        currentLocation: function(GeolocationFactory) {
           return GeolocationFactory.getLocation().then(function(loc) {
-            $log.log(loc);
             return loc;
-          }, function(err) {
-            $log.log(err);
-            return err;
           });
+        }
+        // local: function($log, GeolocationFactory, TimeFactory) {
+        //   return GeolocationFactory.getLocation().then(function(loc) {
+        //     // $log.log('loc', loc);
+        //     var loc = loc;
+        //     return TimeFactory.getLocalTimeZoneGoogle(loc.coords.latitude, loc.coords.longitude).then(function(tz) {
+        //       $log.log('loc', loc);
+        //       $log.log('tz', tz);
+        //       return {
+        //         location: loc,
+        //         timezone: tz
+        //       };
+        //     });
+        //   })
+        //   .catch(function(err) {
+        //     $log.log(err);
+        //     return {error: err};
+        //   });
+        // }
+      }
+    })
+    .state('main.location', {
+      url: '/location',
+      views: {
+        'tabs-location': {
+          templateUrl: 'main/templates/location.html',
+          controller: 'LocationCtrl'
+        }
+      }
+    })
+    .state('main.times', {
+      url: '/times',
+      views: {
+        'tabs-times': {
+          templateUrl: 'main/templates/times.html',
+          controller: 'TimesCtrl'
         }
       }
     })
@@ -48,15 +80,7 @@ angular.module('main', [
         }
       }
     })
-    .state('main.location', {
-      url: '/location',
-      views: {
-        'tabs-location': {
-          templateUrl: 'main/templates/location.html',
-          controller: 'LocationCtrl'
-        }
-      }
-    })
+
     .state('main.numbas', {
       url: '/numbas',
       views: {

@@ -169,23 +169,27 @@ angular.module('main')
   //   return trueTime; // <-- typeof === date
   // }
   //
-  function allTheTimes (latitude, longitude, rawOffset, dstOffset) {
+  function allTheTimes (latitude, longitude, rawOffset, dstOffset, eotOffset) {
 
     // diffs
+    var meanEpoc, daDiffMeanClock, daDiffTrueClock,
+        eotOffset = eotOffset * 60; // cuz it's their an in fractions of a minute; ours is in seconds
+
+
     // if over land, where apparently time zones exist
     if ( typeof rawOffset !== 'undefined' ) {
       var epoc = rawOffset + dstOffset;
-      var meanEpoc = longitude * (86400 / 360); // seconds in a day divided by 360 degrees
-      var daDiffMeanClock = meanEpoc - epoc; // diff mean time -> longitude ratio :: timezone
-      var daDiffTrueClock = daDiffMeanClock - equationOfTime(); // " minus eot
+      meanEpoc = longitude * (86400 / 360); // seconds in a day divided by 360 degrees
+      daDiffMeanClock = meanEpoc - epoc; // diff mean time -> longitude ratio :: timezone
+      daDiffTrueClock = daDiffMeanClock - eotOffset; // " minus eot
     }
     // else at sea, where the time is just the exact time.
     // should return mean local time without 'epoc', which is essentially man-made time chunker
     // ie diffMean => 0, diffTrue => eot
     else {
-      var meanEpoc = longitude * (86400 / 360);
-      var daDiffMeanClock = meanEpoc - meanEpoc; // 0
-      var daDiffTrueClock = daDiffMeanClock - equationOfTime();
+      meanEpoc = longitude * (86400 / 360);
+      daDiffMeanClock = meanEpoc - meanEpoc; // 0
+      daDiffTrueClock = daDiffMeanClock - eotOffset;
     }
 
       var diffs = {

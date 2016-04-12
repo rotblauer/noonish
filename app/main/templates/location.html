@@ -1,19 +1,32 @@
 <ion-view view-name="tabs-location" view-title="{{ data.string }}">
 
 <!-- content goes here -->
-<ion-content class="padding">
+<ion-content class="padding" scroll="false">
 
-<p class="type type-muted">
-  <span ng-if="addressMode" ng-click="changeAddressMode()">
-    @&nbsp;{{ nearestCity }} <br>
-  </span>
-  <span ng-if="!addressMode" ng-click="changeAddressMode()">
-    &nbsp;<i class="icon ion-android-more-vertical"></i>&nbsp;
-    {{ map.center.longitude | number:4 }}
-    &nbsp;
-    &nbsp;<i class="icon ion-android-more-horizontal"></i>&nbsp;
-    {{ map.center.latitude | number:4 }}
-  </span>
+<p class="type type-positive" ng-if="!addressMode" ng-click="changeAddressMode()">
+
+  &nbsp;<i class="icon ion-android-more-horizontal type type-muted"></i>&nbsp;
+  {{ data.marker.coords.latitude | number:4 }}
+  &nbsp;
+  &nbsp;<i class="icon ion-android-more-vertical type type-muted"></i>&nbsp;
+  {{ data.marker.coords.longitude | number:4 }}
+
+  <button class="button button-small button-balanced icon-left ion-pinpoint"
+          ng-click="findMe()"
+          ng-class="{ 'button-clear' : locationActual, 'button-outline' : !locationActual }"
+          style="float:right;">Find me</button>
+
+</p>
+
+
+<p class="type type-positive">
+  <span class="type type-muted">@</span>
+  &nbsp;{{ data.nearestCity }}
+</p>
+
+<p class="type type-positive">
+  <span class="type type-muted">Timezone</span>
+  &nbsp;{{ data.timezone.data.timeZoneName || 'Unavailable'}}
 </p>
 
 <div class="row" ng-if="error">
@@ -32,9 +45,9 @@
   events="map.events">
 
   <ui-gmap-marker
-    idKey='marker.idKey'
-    coords="marker.coords"
-    options="marker.options"
+    idKey='data.marker.idKey'
+    coords="data.marker.coords"
+    options="data.marker.options"
           >
           <!-- idKey='{expression}'
           coords='{expression}'
@@ -45,6 +58,8 @@
   </ui-gmap-marker>
 
 </ui-gmap-google-map>
+
+
 
 </ion-content>
 </ion-view>
