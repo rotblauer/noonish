@@ -3,13 +3,15 @@
   <!-- do you want padding? -->
   <ion-content class="padding">
 
-    <h1>Hello moon</h1>
+    <h2>
+      {{ data.inUseLocation.address }}
+    </h2>
 
     <p>
       {{ data.moonIllumination | json }}
     </p>
 
-    <p class="type type-muted">By <strong>your</strong> system clock time</p>
+    <p class="type type-muted">Times by <strong>your</strong> local clock</p>
     <!-- view -->
     <timeline>
       <timeline-event ng-repeat="event in events" side="right">

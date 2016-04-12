@@ -3,7 +3,7 @@
 
 'use strict';
 angular.module('main')
-.controller('SolarEventsCtrl', function ($scope, $log, $q, GeolocationFactory, TimeFactory, SunCalcFactory) {
+.controller('SolarEventsCtrl', function ($scope, $log, $q, $timeout, GeolocationFactory, TimeFactory, SunCalcFactory) {
 
   $scope.data = {};
   $scope.data.string = 'hello';
@@ -24,7 +24,7 @@ angular.module('main')
     // Starting to thing that Suncalc doesn't work for anything east of Greenwich.
     // // BECAUSE it's showing time in my local time. Gotcha.
     var times = SunCalcFactory.getTimes(date, lat, lng);
-    var orderedTimes = {
+    $scope.sunE = {
       nauticalDawn: times['nauticalDawn'],
       dawn: times['dawn'],
       sunrise: times['sunrise'],
@@ -41,16 +41,16 @@ angular.module('main')
       nightEnd: times['nightEnd']
     };
 
-    $scope.events = []; // for timeline
-    angular.forEach(orderedTimes, function (val, key) {
-      var obj = {
-        badgeClass: 'warning',
-        badgeIconClass: 'glyphicon-check',
-        title: key,
-        content: val
-      };
-      this.push(obj);
-    }, $scope.events);
+    // $scope.events = []; // for timeline
+    // angular.forEach(orderedTimes, function (val, key) {
+    //   var obj = {
+    //     badgeClass: 'warning',
+    //     badgeIconClass: 'glyphicon-check',
+    //     title: key,
+    //     content: val
+    //   };
+    //   this.push(obj);
+    // }, $scope.events);
   }
 
   function getTimeZone(loc) {
@@ -65,6 +65,16 @@ angular.module('main')
     }
     return defer.promise;
   }
+
+  function beAClock() {
+    $scope.dateData = Date.now();
+  };
+
+  function clockIt() {
+    beAClock();
+    $timeout(clockIt, 1000);
+  }
+  clockIt();
 
 
   $scope.$on('$ionicView.enter', function() {

@@ -3,19 +3,9 @@
   <!-- do you want padding? -->
   <ion-content class="padding">
 
-    <style>
-      h1.time-display {
-        margin-top: -5px;
-        font-size: 10vw;
-      }
-      p.type-label{
-        margin-bottom: -5px;
-      }
-    </style>
-
-    <!-- <h1>
-      {{ data.inUseLocation | json }}
-    </h1> -->
+    <h2>
+      {{ data.inUseLocation.address }}
+    </h2>
 
 
     <!-- <p class="type type-positive type-label">
@@ -67,7 +57,7 @@
       <div class="col col-100">
 
         <p class="type type-muted">
-          Precise local solar time
+          Precise local solar time (adjusted for EOT)
         </p>
         <h2 class="type skinny skinny-head type-positive ">
           <i class="icon ion-ios-time-outline"></i>
@@ -102,7 +92,7 @@
         </h2>
 
         <p class="type type-muted">
-          Calculated equation of time differential
+          Calculated equation of time differential (mm:ss)
         </p>
         <h2 class="skinny skinny-head" >
           <i class="icon type type-muted ion-ios-clock-outline"></i>

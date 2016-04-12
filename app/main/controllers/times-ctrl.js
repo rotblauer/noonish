@@ -17,6 +17,7 @@ angular.module('main')
     GeolocationFactory.getLocation().then(function(loc) {
       $scope.data.location = loc;
       $log.log('Updated location: ', $scope.data.location);
+
     });
   }
 

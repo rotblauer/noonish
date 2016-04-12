@@ -21,11 +21,18 @@ angular.module('main', [
       resolve: {
         currentLocation: function(GeolocationFactory) {
           return GeolocationFactory.getLocation().then(function(loc) {
-            // return loc;
-            return GeolocationFactory.inUseLocation = {
-              location: loc,
-              isActual: true
-            };
+            var loc = loc;
+            return GeolocationFactory.getNearByCity(loc.coords.latitude, loc.coords.longitude).then(function(data) {
+              var data = data;
+              var address = data.data.results[0]['formatted_address'];
+              // return loc;
+              return GeolocationFactory.inUseLocation = {
+                location: loc,
+                isActual: true,
+                address: address
+              };
+            });
+
           });
         }
         // local: function($log, GeolocationFactory, TimeFactory) {

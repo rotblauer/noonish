@@ -3,13 +3,19 @@
   <!-- do you want padding? -->
   <ion-content class="padding">
 
-    <p>
-      {{ data.currentLocation.coords.latitude | json }}
-    </p>
+    <h2>
+      {{ data.inUseLocation.address }}
 
-    <p class="type type-muted">By <strong>your</strong> system clock time</p>
+    </h2>
+
+    <p class="type type-muted">Times by <strong>your</strong> local clock
+    <span class="type type-positive">
+      <i class="icon ion-ios-clock"></i>
+      {{ dateData | date:"HH:mm:ss" }}
+    </span>
+    </p>
     <!-- view -->
-    <timeline>
+<!--     <timeline>
       <timeline-event ng-repeat="event in events" side="right">
         <timeline-badge class="{{event.badgeClass}}">
           <i class="glyphicon {{event.badgeIconClass}}"></i>
@@ -21,7 +27,93 @@
           <p>{{event.content | date:"HH:mm:ss"}}</p>
         </timeline-panel>
       </timeline-event>
-    </timeline>
+    </timeline> -->
+
+    <div class="list">
+
+      <div class="item item-icon-left" style="border-left: 3px solid gold;">
+        <i class="icon ion-arrow-up-c"></i>
+        Nautical Dawn
+        <span class="item-note">
+          {{ sunE.nauticalDawn | date:"HH:mm:ss " }}
+        </span>
+      </div>
+
+      <div class="item item-icon-left" style="border-left: 6px solid gold;">
+        <i class="icon ion-arrow-up-c"></i>
+        Dawn
+        <span class="item-note">
+          {{ sunE.dawn | date:"HH:mm:ss " }}
+        </span>
+      </div>
+
+      <div class="item item-icon-left" style="border-left: 10px solid gold;">
+        <i class="icon ion-arrow-up-c"></i>
+        Sunrise
+        <span class="item-note">
+          {{ sunE.sunrise | date:"HH:mm:ss " }} &nbsp;-&nbsp; {{ sunE.sunriseEnd | date:"HH:mm:ss " }}
+        </span>
+      </div>
+
+      <div class="item item-icon-left" style="border-left: 15px solid gold;">
+        <i class="icon ion-ios-sunny"></i>
+        Solar noon
+        <span class="item-note">
+          {{ sunE.solarNoon | date:"HH:mm:ss " }}
+        </span>
+      </div>
+
+      <div class="item item-icon-left" style="border-left: 10px solid lightblue;">
+        <i class="icon ion-arrow-down-c"></i>
+        Sunset
+        <span class="item-note">
+          {{ sunE.sunsetStart | date:"HH:mm:ss " }} &nbsp;-&nbsp; {{ sunE.sunset | date:"HH:mm:ss " }}
+        </span>
+      </div>
+
+      <div class="item item-icon-left" style="border-left: 6px solid lightblue;">
+        <i class="icon ion-arrow-down-c"></i>
+        Dusk
+        <span class="item-note">
+          {{ sunE.dusk | date:"HH:mm:ss " }}
+        </span>
+      </div>
+
+      <div class="item item-icon-left" style="border-left: 3px solid lightblue;">
+        <i class="icon ion-arrow-down-c"></i>
+        Nautical dusk
+        <span class="item-note">
+          {{ sunE.nauticalDusk | date:"HH:mm:ss " }}
+        </span>
+      </div>
+
+      <div class="item item-icon-left" style="border-left: 6px solid darkblue;">
+        <i class="icon ion-arrow-down-c"></i>
+        Night
+        <span class="item-note">
+          {{ sunE.night | date:"HH:mm:ss " }}
+        </span>
+      </div>
+
+      <div class="item item-icon-left" style="border-left: 15px solid darkblue;">
+        <i class="icon ion-ios-moon"></i>
+        Nadir
+        <span class="item-note">
+          {{ sunE.nadir | date:"HH:mm:ss " }}
+        </span>
+      </div>
+
+      <div class="item item-icon-left" style="border-left: 5px solid lightblue;">
+        <i class="icon ion-arrow-down-c"></i>
+        Night ends
+        <span class="item-note">
+          {{ sunE.nightEnd | date:"HH:mm:ss " }}
+        </span>
+      </div>
+
+
+
+    </div>
 
 
   </ion-content>

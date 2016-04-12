@@ -70,6 +70,7 @@ angular.module('main')
         $log.log('nearByCity data', data);
         if ( data.data.status !== 'ZERO_RESULTS' ) {
           $scope.data.nearestCity = data.data.results[0]['formatted_address'];
+          GeolocationFactory.inUseLocation['address'] = $scope.data.nearestCity;
         }
         else {
           $scope.data.nearestCity = 'The wine dark sea.';
@@ -112,6 +113,8 @@ angular.module('main')
       location: position,
       isActual: shouldInitMap
     };
+    GeolocationFactory.inUseLocation['location'] = position;
+    GeolocationFactory.inUseLocation['isActual'] = shouldInitMap;
   }
 
   $scope.findMe = function() {
