@@ -3,52 +3,69 @@ angular.module('main', [
   'ionic',
   'ngCordova',
   'ui.router',
-  'uiGmapgoogle-maps'
-  // TODO: load other modules selected during generation
+  'uiGmapgoogle-maps',
+  'LocalForageModule',
+  'angular-timeline'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
 
   // ROUTING with ui.router
-  $urlRouterProvider.otherwise('/timer');
+  $urlRouterProvider.otherwise('/main/solarEvents');
   $stateProvider
     // this state is placed in the <ion-nav-view> in the index.html
-    // .state('main', {
-    //   url: '/main',
-    //   abstract: true,
-    //   templateUrl: 'main/templates/menu.html',
-    //   controller: 'MenuCtrl as menu'
-    // })
-    .state('timer', {
-      url: '/timer',
-      views: {
-        'timer': {
-          templateUrl: 'main/templates/timer.html',
-          controller: 'TimerCtrl'
+    .state('main', {
+      url: '/main',
+      abstract: true,
+      templateUrl: 'main/templates/tabs.html',
+      controller: 'MainCtrl as mainCtrl',
+      resolve: {
+        currentLocation: function($log, GeolocationFactory) {
+          return GeolocationFactory.getLocation().then(function(loc) {
+            $log.log(loc);
+            return loc;
+          }, function(err) {
+            $log.log(err);
+            return err;
+          });
         }
       }
     })
-    // .state('main.sunny', {
-    //   url: '/sunny',
-    //   views: {
-    //     'pageContent': {
-    //       templateUrl: 'main/templates/sunny.html',
-    //       controller: 'SunnyCtrl'
-    //     }
-    //   }
-    // })
-    .state('numbas', {
+    .state('main.solarEvents', {
+      url: '/solarEvents',
+      views: {
+        'tabs-solarevents': {
+          templateUrl: 'main/templates/solarEvents.html',
+          controller: 'SolarEventsCtrl'
+        }
+      }
+    })
+    .state('main.lunarEvents', {
+      url: '/lunarEvents',
+      views: {
+        'tabs-lunarevents': {
+          templateUrl: 'main/templates/lunarEvents.html',
+          controller: 'LunarEventsCtrl'
+        }
+      }
+    })
+    .state('main.location', {
+      url: '/location',
+      views: {
+        'tabs-location': {
+          templateUrl: 'main/templates/location.html',
+          controller: 'LocationCtrl'
+        }
+      }
+    })
+    .state('main.numbas', {
       url: '/numbas',
       views: {
-        'timer': {
-          templateUrl: 'main/templates/numbas.html',
-          controller: 'NumbasCtrl'
+        'tabs-numbas': {
+          templateUrl: 'main/templates/numbas2.html',
+          // templateUrl: 'main/templates/numbas.html',
+          controller: 'Numbas2Ctrl'
         }
       }
     })
     ;
-    // .state('realTime', {
-    //   url: '/real-time',
-    //   templateUrl: '/main/templates/timer.html',
-    //   controller: 'TimerCtrl'
-    // });
 });

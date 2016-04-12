@@ -1,0 +1,50 @@
+<ion-view view-name="tabs-location" view-title="{{ data.string }}">
+
+<!-- content goes here -->
+<ion-content class="padding">
+
+<p class="type type-muted">
+  <span ng-if="addressMode" ng-click="changeAddressMode()">
+    @&nbsp;{{ nearestCity }} <br>
+  </span>
+  <span ng-if="!addressMode" ng-click="changeAddressMode()">
+    &nbsp;<i class="icon ion-android-more-vertical"></i>&nbsp;
+    {{ map.center.longitude | number:4 }}
+    &nbsp;
+    &nbsp;<i class="icon ion-android-more-horizontal"></i>&nbsp;
+    {{ map.center.latitude | number:4 }}
+  </span>
+</p>
+
+<div class="row" ng-if="error">
+  <div class="col col-100">
+    <h5 class="type type-assertive" ng-if="error">
+      Error: {{ error }}
+    </h5>
+  </div>
+</div>
+
+<ui-gmap-google-map
+  center='map.center'
+  zoom='map.zoom'
+  options="map.options"
+  styles="map.styles"
+  events="map.events">
+
+  <ui-gmap-marker
+    idKey='marker.idKey'
+    coords="marker.coords"
+    options="marker.options"
+          >
+          <!-- idKey='{expression}'
+          coords='{expression}'
+          click='{expression}'
+          options='{expression}'
+          events='{expression}'
+          control='{expression}' -->
+  </ui-gmap-marker>
+
+</ui-gmap-google-map>
+
+</ion-content>
+</ion-view>

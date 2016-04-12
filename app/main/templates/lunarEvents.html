@@ -1,0 +1,30 @@
+<ion-view view-name="tabs-lunarevents" view-title="{{ data.string }}">
+
+  <!-- do you want padding? -->
+  <ion-content class="padding">
+
+    <h1>Hello moon</h1>
+
+    <p>
+      {{ data.moonIllumination | json }}
+    </p>
+
+    <p class="type type-muted">By clock time</p>
+    <!-- view -->
+    <timeline>
+      <timeline-event ng-repeat="event in events" side="right">
+        <timeline-badge class="{{event.badgeClass}}">
+          <i class="glyphicon {{event.badgeIconClass}}"></i>
+        </timeline-badge>
+        <timeline-panel class="{{event.badgeClass}}">
+          <timeline-heading>
+            <h4>{{event.title}}</h4>
+          </timeline-heading>
+          <p>{{event.content | date:"HH:mm:ss"}}</p>
+        </timeline-panel>
+      </timeline-event>
+    </timeline>
+
+
+  </ion-content>
+</ion-view>

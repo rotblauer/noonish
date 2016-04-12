@@ -13,6 +13,7 @@
 
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/angular-timeline/dist/angular-timeline.css" />
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -37,7 +38,7 @@
       have templates inline in this html file if you'd like).
     -->
     <!-- <ion-nav-view> -->
-      <ion-nav-view name="timer"></ion-nav-view>
+      <ion-nav-view></ion-nav-view>
     <!-- </ion-nav-view> -->
 
     <!-- will be a 404 during development -->
@@ -62,6 +63,7 @@
     <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.js"></script>
     <script src="bower_components/lodash/lodash.js"></script>
     <script src="bower_components/angular-google-maps/dist/angular-google-maps.js"></script>
+    <script src="bower_components/angular-timeline/dist/angular-timeline.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -69,14 +71,18 @@
     <!-- inject:js -->
     <script src="main/main.js"></script>
     <script src="main/services/time-factory-serv.js"></script>
+    <script src="main/services/suncalc-serv.js"></script>
     <script src="main/services/riser-serv.js"></script>
     <script src="main/services/geolocation-factory-serv.js"></script>
     <script src="main/services/geo-locate-serv.js"></script>
     <script src="main/filters/in-minutes-fil.js"></script>
     <script src="main/controllers/timer-ctrl.js"></script>
     <script src="main/controllers/sunny-ctrl.js"></script>
+    <script src="main/controllers/solar-events-ctrl.js"></script>
     <script src="main/controllers/numbas-ctrl.js"></script>
-    <script src="main/controllers/menu-ctrl.js"></script>
+    <script src="main/controllers/main-ctrl.js"></script>
+    <script src="main/controllers/lunar-events-ctrl.js"></script>
+    <script src="main/controllers/location-ctrl.js"></script>
     <script src="main/constants/mapstyle-const.js"></script>
     <script src="main/constants/config-const.js"></script>
     <script src="app.js"></script>
