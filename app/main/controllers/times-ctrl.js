@@ -103,6 +103,7 @@ angular.module('main')
   }
 
   $scope.$on('$ionicView.enter', function() {
+    $scope.tickIndex = 0;
     $scope.data.inUseLocation = GeolocationFactory.inUseLocation;
     $scope.data.location = GeolocationFactory.inUseLocation.location;
     init();

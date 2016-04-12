@@ -3,16 +3,16 @@
 
 'use strict';
 angular.module('main')
-.controller('LunarEventsCtrl', function ($scope, $log, GeolocationFactory, SunCalcFactory) {
+.controller('LunarEventsCtrl', function ($scope, $log, $q, GeolocationFactory, TimeFactory, SunCalcFactory) {
 
   $scope.data = {};
   $scope.data.string = 'hello';
-  $scope.data.location = GeolocationFactory.inUseLocation;
+  $scope.data.inUseLocation = GeolocationFactory.inUseLocation;
   $scope.data.currentLocation = GeolocationFactory.inUseLocation.location;
 
 
   function init() {
-    var date = Date.now();
+    var date = new Date();
     var lat = $scope.data.currentLocation.coords.latitude;
     var lng = $scope.data.currentLocation.coords.longitude;
 
@@ -56,12 +56,29 @@ angular.module('main')
     }, $scope.events);
   }
 
+  function getTimeZone(loc) {
+    var defer = $q.defer();
+    if (typeof $scope.data.inUseLocation['timezone'] === 'undefined') {
+      TimeFactory.getLocalTimeZoneGoogle(loc.coords.latitude, loc.coords.longitude).then(function(tz) {
+        GeolocationFactory.inUseLocation['timezone'] = tz;
+        defer.resolve(tz);
+      });
+    } else {
+      defer.resolve($scope.data.inUseLocation['timezone']);
+    }
+    return defer.promise;
+  }
+
 
 
   $scope.$on('$ionicView.enter', function() {
-    $scope.data.location = GeolocationFactory.inUseLocation;
+    $scope.data.inUseLocation = GeolocationFactory.inUseLocation;
     $scope.data.currentLocation = GeolocationFactory.inUseLocation.location;
-    init();
+
+    getTimeZone($scope.data.currentLocation).then(function(tz) {
+      $scope.data.timezone = tz;
+      init();
+    });
   });
 
 
