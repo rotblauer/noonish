@@ -1,11 +1,74 @@
-<ion-view view-name="tabs-times" view-title="{{ data.string }}">
+<ion-view view-name="tabs-times" view-title="{{ data.string }}" hide-nav-bar="true">
 
   <!-- do you want padding? -->
   <ion-content class="padding">
 
-    <h2>
+  <!--   <h2>
       {{ data.inUseLocation.address }}
     </h2>
+ -->
+  <!--   <div class="padding">
+      <p class="type type-positive" ng-if="!addressMode" ng-click="changeAddressMode()">
+
+        &nbsp;<i class="icon ion-android-more-horizontal type type-muted"></i>&nbsp;
+        {{ data.location.coords.latitude | number:4 }}
+        &nbsp;
+        &nbsp;<i class="icon ion-android-more-vertical type type-muted"></i>&nbsp;
+        {{ data.location.coords.longitude | number:4 }}
+
+      </p>
+
+
+      <p class="type type-positive">
+        <span class="type type-muted">@</span>
+        &nbsp;{{ data.inUseLocation.address }}
+      </p>
+
+      <p class="type type-positive">
+        <span class="type type-muted">Timezone</span>
+        &nbsp;{{ data.inUseLocation.timezone.data.timeZoneName || 'Unavailable'}}
+      </p>
+
+      <div class="row" ng-if="error">
+        <div class="col col-100">
+          <h5 class="type type-assertive" ng-if="error">
+            Error: {{ error }}
+          </h5>
+        </div>
+      </div>
+    </div> -->
+
+    <div class="item item-icon-left item-no-border">
+
+      <i class="icon ion-ios-location type "
+          ng-class="{'type-assertive' : data.inUseLocation.timezone.data.timeZoneName, 'type-muted' : !data.inUseLocation.timezone.data.timeZoneName}"></i>
+
+      <p class="type type-positive" >
+        <span class="type type-muted">Latitude </span>
+        <!-- &nbsp;<i class="icon ion-android-more-horizontal type type-muted"></i>&nbsp; -->
+        {{ data.location.coords.latitude | number:4 }}
+        &nbsp;
+        <span class="type type-muted">Longitude </span>
+        <!-- &nbsp;<i class="icon ion-android-more-vertical type type-muted"></i>&nbsp; -->
+        {{ data.location.coords.longitude | number:4 }}
+
+      </p>
+
+
+      <p class="type type-positive">
+        <span class="type type-muted">@</span>
+        &nbsp;{{ data.inUseLocation.address }}
+      </p>
+
+      <p class="type type-positive">
+        <span class="type type-muted">Timezone</span>
+        &nbsp;{{ data.inUseLocation.timezone.data.timeZoneName || 'Unavailable'}}
+      </p>
+
+      <p class="type type-assertive" ng-if="error">
+        Error: {{ error }}
+      </p>
+    </div>
 
 
     <!-- <p class="type type-positive type-label">
@@ -45,7 +108,12 @@
 
     <!-- ******************************************************** -->
 
-    <div>
+    <p class="padding type type-assertive" ng-show="!data.inUseLocation.timezone.data.timeZoneName">
+      <i class="icon ion-flag"></i>
+      The times below aren't compared to any timezone. (Fewer committee meetings to schedule means no reason for timezones.)
+    </p>
+
+    <div class="card padding">
     <div class="row skinny skinny-ass">
 
       <style>
@@ -56,21 +124,21 @@
 
       <div class="col col-100">
 
+
         <p class="type type-muted">
-          Precise local solar time (adjusted for EOT)
+          Clock time ({{ data.timezone.data.timeZoneName || 'measured longitudinally'}})
         </p>
-        <h2 class="type skinny skinny-head type-positive ">
-          <i class="icon ion-ios-time-outline"></i>
-          {{ data.times.times.trueTime | date: 'HH:mm:ss' }}
-          &nbsp;
-          <span class="type" ng-class="{ 'type-balanced' : !data.diffTrueClock.behind, 'type-calm' : data.diffTrueClock.behind }" style="font-size: .8em;">
-            {{ data.diffTrueClock.output  }}
-          </span>
+        <h2 class="type skinny skinny-head type-muted">
+
+          <i class="icon ion-ios-clock-outline"></i>
+          {{ data.times.times.localTime | date: 'HH:mm:ss' }}
         </h2>
 
 
+
         <p class="type type-muted">
-           Mean local solar time
+           Mean local solar time <br>
+           <span class="type type-small">Measured by calculating the ratio of a longitude relative to 360&deg; around the Earth as a fraction of a theoretical approximate 24 hours in a day. The difference is compared to the local timezone. </span>
         </p>
         <h2 class="type skinny skinny-head type-positive">
 
@@ -82,20 +150,29 @@
           </span>
         </h2>
 
-        <p class="type type-muted">
-          Clock time ({{ data.timezone.data.timeZoneName || 'measured longitudinally'}})
-        </p>
-        <h2 class="type skinny skinny-head type-muted">
 
-          <i class="icon ion-ios-clock-outline"></i>
-          {{ data.times.times.localTime | date: 'HH:mm:ss' }}
+
+
+
+        <p class="type type-muted">
+          Apparent local solar time (adjusted for EOT) <br>
+          <span class="type type-small">This time is similar to mean solar time, but it also takes into account the equation of time differential, which makes it about as close to a sundial as you can get!</span>
+        </p>
+        <h2 class="type skinny skinny-head type-positive ">
+          <i class="icon ion-ios-time-outline"></i>
+          {{ data.times.times.trueTime | date: 'HH:mm:ss' }}
+          &nbsp;
+          <span class="type" ng-class="{ 'type-balanced' : !data.diffTrueClock.behind, 'type-calm' : data.diffTrueClock.behind }" style="font-size: .8em;">
+            {{ data.diffTrueClock.output  }}
+          </span>
         </h2>
 
         <p class="type type-muted">
-          Calculated equation of time differential (mm:ss)
+          Calculated equation of time differential (mm:ss) <br>
+          <span class="type type-small">Varying predictably throughout the year from about -14 minutes to about +16 minutes, the equation of time takes into account Earth's axial tilt and orbital eccentricity. It's the difference between mean solar time and apparent solar time, like comparing a theoretical average sundial and an actual sundial.</span>
         </p>
         <h2 class="skinny skinny-head" >
-          <i class="icon type type-muted ion-ios-clock-outline"></i>
+          <i class="icon type type-muted ion-calculator"></i>
           <span class="type" ng-class="{ 'type-balanced' : !data.presentableEOT.behind, 'type-calm' : data.presentableEOT.behind }">{{ data.presentableEOT.output }}</span>
 
         </h2>
@@ -103,6 +180,16 @@
       </div>
     </div>
     </div>
+
+    <p class="type type-muted padding">
+      <i class="icon ion-help-circled"></i>
+      &nbsp;
+      <strong>What about Daylight Saving Time?</strong><br>
+      <span>
+        Daylight Saving Time was invented in 1895, and while widely adopted, it remains a political decision, and is not standardized or universal. And since sundials can't vote, it seems to make sense to leave them out of it altogether. That's why during Daylight Saving Time the difference between clock time and solar time seems to be so big -- because it is!
+
+      </span>
+    </p>
 
     <!-- ******************************************************** -->
 

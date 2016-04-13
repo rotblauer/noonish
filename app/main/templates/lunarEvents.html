@@ -1,31 +1,70 @@
-<ion-view view-name="tabs-lunarevents" view-title="{{ data.string }}">
+<ion-view view-name="tabs-lunarevents" view-title="{{ data.string }}" hide-nav-bar="true">
 
   <!-- do you want padding? -->
   <ion-content class="padding">
 
-    <h2>
-      {{ data.inUseLocation.address }}
-    </h2>
+    <div class="item item-icon-left item-no-border">
 
-    <p>
-      {{ data.moonIllumination | json }}
+      <i class="icon ion-ios-location type "
+          ng-class="{'type-assertive' : data.inUseLocation.timezone.data.timeZoneName, 'type-muted' : !data.inUseLocation.timezone.data.timeZoneName}"></i>
+
+      <p class="type type-positive" >
+        <span class="type type-muted">Latitude </span>
+        <!-- &nbsp;<i class="icon ion-android-more-horizontal type type-muted"></i>&nbsp; -->
+        {{ data.currentLocation.coords.latitude | number:4 }}
+        &nbsp;
+        <span class="type type-muted">Longitude </span>
+        <!-- &nbsp;<i class="icon ion-android-more-vertical type type-muted"></i>&nbsp; -->
+        {{ data.currentLocation.coords.longitude | number:4 }}
+
+      </p>
+
+
+      <p class="type type-positive">
+        <span class="type type-muted">@</span>
+        &nbsp;{{ data.inUseLocation.address }}
+      </p>
+
+      <p class="type type-positive">
+        <span class="type type-muted">Timezone</span>
+        &nbsp;{{ data.inUseLocation.timezone.data.timeZoneName || 'Unavailable'}}
+      </p>
+
+      <p class="type type-assertive" ng-if="error">
+        Error: {{ error }}
+      </p>
+    </div>
+
+    <div class="list">
+
+      <p class="type type-muted" style="float:right; margin-right: 15px;">Times by <strong>your</strong> local clock
+      <span class="type type-positive">
+        <i class="icon ion-ios-clock"></i>
+        {{ dateData | date:"HH:mm:ss" }}
+      </span>
+      </p>
+      <!-- view -->
+      <div class="item item-icon-left" style="border-left: 3px solid eggshell;">
+       <i class="icon ion-arrow-up-c"></i>
+       Moon rise
+       <span class="item-note">
+         {{ lunarE.rise | date:"HH:mm:ss " }}
+       </span>
+         </div>
+
+         <div class="item item-icon-left" style="border-left: 3px solid eggshell;">
+       <i class="icon ion-arrow-down-c"></i>
+       Moon set
+       <span class="item-note">
+         {{ lunarE.set | date:"HH:mm:ss " }}
+       </span>
+         </div>
+    </div>
+
+    <p class="type type-muted text-center">
+      Tonight's moon is a <strong>{{ phaseName }}</strong>, with
+      {{ illumPercent * 100 | number:0 }}% of the moon illuminated.
     </p>
-
-    <p class="type type-muted">Times by <strong>your</strong> local clock</p>
-    <!-- view -->
-    <timeline>
-      <timeline-event ng-repeat="event in events" side="right">
-        <timeline-badge class="{{event.badgeClass}}">
-          <i class="glyphicon {{event.badgeIconClass}}"></i>
-        </timeline-badge>
-        <timeline-panel class="{{event.badgeClass}}">
-          <timeline-heading>
-            <h4>{{event.title}}</h4>
-          </timeline-heading>
-          <p>{{event.content | date:"HH:mm:ss"}}</p>
-        </timeline-panel>
-      </timeline-event>
-    </timeline>
 
 
   </ion-content>

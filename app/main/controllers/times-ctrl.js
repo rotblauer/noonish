@@ -9,7 +9,7 @@ angular.module('main')
   $scope.data.inUseLocation = GeolocationFactory.inUseLocation;
   $scope.data.location = GeolocationFactory.inUseLocation.location;
 
-  $log.log('data.location', $scope.data.location);
+  // $log.log('data.location', $scope.data.location);
 
   $scope.tickIndex = 0;
 
@@ -25,7 +25,12 @@ angular.module('main')
   // The other Date instance lives in the TimeFactory.
   function updateDate() {
     var date = new Date();
-    date.setTime(date.getTime() + $scope.data.timezone.data.rawOffset / 60000);
+    if (typeof $scope.data.timezone.data.rawOffset !== 'undefined') {
+      date.setTime(date.getTime() + $scope.data.timezone.data.rawOffset / 60000);
+    } else {
+      date.setTime(date.getTime() + $scope.data.location.coords.longitude * (86400 / 360 / 60000) );
+    }
+
     var day = date.getDate();
     var month = date.getMonth() + 1;
     var year = date.getYear();
@@ -42,7 +47,7 @@ angular.module('main')
     var date = updateDate();
     var JD = RiserFactory.getJD(date.day, date.month, date.year); // day, month, year
     var T = RiserFactory.calcTimeJulianCent(JD); // The units? No idea.
-    $scope.data.EOT = -RiserFactory.calcEquationOfTime(T); // in minutes
+    $scope.data.EOT = parseFloat(RiserFactory.calcEquationOfTime(T)); // in minutes
     //\\
     // $log.log('$scope.data.EOT',$scope.data.EOT);
     $scope.data.presentableEOT = RiserFactory.betterTimeString($scope.data.EOT * 60);
@@ -57,12 +62,15 @@ angular.module('main')
 
     $scope.tickIndex++;
     // $log.log('Ticking @ ', $scope.tickIndex);
-
+    //
+    // $log.log('$scope.data.timezone.data.rawOffset', $scope.data.timezone.data.rawOffset);
+    // $log.log('$scope.data.location.coords.longitude * (86400 / 360)', $scope.data.location.coords.longitude * (86400 / 360));
+    // $log.log('$scope.data.EOT', $scope.data.EOT);
     $scope.data.times = TimeFactory.allTheTimes(
       $scope.data.location.coords.latitude,
       $scope.data.location.coords.longitude,
-      $scope.data.timezone.data.rawOffset,
-      $scope.data.timezone.data.dstOffset,
+      $scope.data.timezone.data.rawOffset || undefined, // $scope.data.location.coords.longitude * (86400 / 360), // or ratio around the world from Greenwich
+      $scope.data.timezone.data.dstOffset || 0, //
       $scope.data.EOT//$scope.data.EOT // use their EOT,
     );
 

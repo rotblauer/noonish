@@ -172,8 +172,13 @@ angular.module('main')
   function allTheTimes (latitude, longitude, rawOffset, dstOffset, eotOffset) {
 
     // diffs
-    var meanEpoc, daDiffMeanClock, daDiffTrueClock,
-        eotOffset = eotOffset * 60; // cuz it's their an in fractions of a minute; ours is in seconds
+    var meanEpoc
+        , daDiffMeanClock
+        , daDiffTrueClock
+        , eotOffset = eotOffset * 60; // cuz it's their an in fractions of a minute; ours is in seconds
+
+    // $log.log('eotOffset', eotOffset);
+    // $log.log('eotOffset * 60', eotOffset * 60);
 
 
     // if over land, where apparently time zones exist
@@ -187,6 +192,8 @@ angular.module('main')
     // should return mean local time without 'epoc', which is essentially man-made time chunker
     // ie diffMean => 0, diffTrue => eot
     else {
+      // $log.log('rawOffset was undefined');
+
       meanEpoc = longitude * (86400 / 360);
       daDiffMeanClock = meanEpoc - meanEpoc; // 0
       daDiffTrueClock = daDiffMeanClock - eotOffset;
@@ -222,6 +229,9 @@ angular.module('main')
         meanTime: meanTimeThere,
         trueTime: trueTimeThere
       };
+    // $log.log('diffs', diffs);
+    // $log.log('times', times);
+
 
     return { diffs: diffs, times: times };
   }

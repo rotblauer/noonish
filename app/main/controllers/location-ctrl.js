@@ -74,6 +74,7 @@ angular.module('main')
         }
         else {
           $scope.data.nearestCity = 'The wine dark sea.';
+          GeolocationFactory.inUseLocation['address'] = $scope.data.nearestCity;
         }
       })
       .catch( function couldntGetCity (error) {

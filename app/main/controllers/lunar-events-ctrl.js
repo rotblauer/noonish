@@ -3,7 +3,7 @@
 
 'use strict';
 angular.module('main')
-.controller('LunarEventsCtrl', function ($scope, $log, $q, GeolocationFactory, TimeFactory, SunCalcFactory) {
+.controller('LunarEventsCtrl', function ($scope, $log, $q, $timeout, GeolocationFactory, TimeFactory, SunCalcFactory) {
 
   $scope.data = {};
   $scope.data.string = 'hello';
@@ -18,7 +18,7 @@ angular.module('main')
 
 
     var times = SunCalcFactory.getMoonTimes(date, lat, lng);
-    $scope.data.moonIllumination = SunCalcFactory.getMoonIllumination(date);
+    var moonIllum = SunCalcFactory.getMoonIllumination(date);
 
     // Returns an object with the following properties:
 
@@ -36,24 +36,34 @@ angular.module('main')
     // Waning Gibbous
     // 0.75  Last Quarter
     // Waning Crescent
-    //
-    //
-    //
-    var orderedTimes = {
-      Rise: times['rise'],
-      Set: times['set']
+    if (moonIllum.phase === 0) { $scope.phaseName = 'New Moon'; } else
+    if (moonIllum.phase > 0 && moonIllum.phase < 0.25) { $scope.phaseName = 'Waxing Crescent'; } else
+    if (moonIllum.phase === 0.25) { $scope.phaseName = 'First Quarter'; } else
+    if (moonIllum.phase > 0.25 && moonIllum.phase < 0.5) { $scope.phaseName = 'Waxing Gibbous'; } else
+    if (moonIllum.phase === 0.5) { $scope.phaseName = 'Full Moon'; } else
+    if (moonIllum.phase > 0.5 && moonIllum.phase < 0.75) { $scope.phaseName = 'Waning Gibbous'; } else
+    if (moonIllum.phase === 0.75) { $scope.phaseName = 'Last Quarter'; } else
+    if (moonIllum.phase > 0.75 && moonIllum.phase < 1) { $scope.phaseName = 'Waning Crescent'; } else
+    { $scope.phaseName = 'Miracle Moon'; }
+
+    $scope.illumPercent = moonIllum.fraction;
+
+
+    $scope.lunarE = {
+      rise: times['rise'],
+      set: times['set']
     };
 
-    $scope.events = []; // for timeline
-    angular.forEach(orderedTimes, function (val, key) {
-      var obj = {
-        badgeClass: 'default',
-        badgeIconClass: 'glyphicon-check',
-        title: key,
-        content: val
-      };
-      this.push(obj);
-    }, $scope.events);
+    // $scope.events = []; // for timeline
+    // angular.forEach(orderedTimes, function (val, key) {
+    //   var obj = {
+    //     badgeClass: 'default',
+    //     badgeIconClass: 'glyphicon-check',
+    //     title: key,
+    //     content: val
+    //   };
+    //   this.push(obj);
+    // }, $scope.events);
   }
 
   function getTimeZone(loc) {
@@ -68,6 +78,16 @@ angular.module('main')
     }
     return defer.promise;
   }
+
+  function beAClock() {
+    $scope.dateData = Date.now();
+  };
+
+  function clockIt() {
+    beAClock();
+    $timeout(clockIt, 1000);
+  }
+  clockIt();
 
 
 

@@ -1,63 +1,68 @@
-<ion-view view-name="tabs-location" view-title="{{ data.string }}">
+<ion-view view-name="tabs-location" view-title="{{ data.string }}" hide-nav-bar="true">
 
 <!-- content goes here -->
 <ion-content class="padding" scroll="false">
 
-<p class="type type-positive" ng-if="!addressMode" ng-click="changeAddressMode()">
+<div class="item item-icon-left item-no-border item-icon-right">
 
-  &nbsp;<i class="icon ion-android-more-horizontal type type-muted"></i>&nbsp;
-  {{ data.marker.coords.latitude | number:4 }}
-  &nbsp;
-  &nbsp;<i class="icon ion-android-more-vertical type type-muted"></i>&nbsp;
-  {{ data.marker.coords.longitude | number:4 }}
+  <i class="icon ion-ios-location type" ng-class="{'type-assertive' : data.timezone.data.timeZoneName, 'type-muted' : !data.timezone.data.timeZoneName}"></i>
 
-  <button class="button button-small button-balanced icon-left ion-pinpoint"
-          ng-click="findMe()"
-          ng-class="{ 'button-clear' : locationActual, 'button-outline' : !locationActual }"
-          style="float:right;">Find me</button>
+  <p class="type type-positive" >
+    <span class="type type-muted">Latitude </span>
+    <!-- &nbsp;<i class="icon ion-android-more-horizontal type type-muted"></i>&nbsp; -->
+    {{ data.marker.coords.latitude | number:4 }}
+    &nbsp;
+    <span class="type type-muted">Longitude </span>
+    <!-- &nbsp;<i class="icon ion-android-more-vertical type type-muted"></i>&nbsp; -->
+    {{ data.marker.coords.longitude | number:4 }}
 
-</p>
+  </p>
 
+  <p class="type type-positive">
+    <span class="type type-muted">@</span>
+    &nbsp;{{ data.nearestCity }}
+  </p>
 
-<p class="type type-positive">
-  <span class="type type-muted">@</span>
-  &nbsp;{{ data.nearestCity }}
-</p>
+  <p class="type type-positive">
+    <span class="type type-muted">Timezone</span>
+    &nbsp;{{ data.timezone.data.timeZoneName || 'Unavailable'}}
+  </p>
 
-<p class="type type-positive">
-  <span class="type type-muted">Timezone</span>
-  &nbsp;{{ data.timezone.data.timeZoneName || 'Unavailable'}}
-</p>
+  <p class="type type-assertive" ng-if="error">
+    Error: {{ error }}
+  </p>
 
-<div class="row" ng-if="error">
-  <div class="col col-100">
-    <h5 class="type type-assertive" ng-if="error">
-      Error: {{ error }}
-    </h5>
-  </div>
+  <i class="icon ion-pinpoint type "
+      ng-click="findMe()"
+      ng-class="{ 'type-balanced' : locationActual, 'type-muted' : !locationActual }"></i>
+
 </div>
 
-<ui-gmap-google-map
-  center='map.center'
-  zoom='map.zoom'
-  options="map.options"
-  styles="map.styles"
-  events="map.events">
 
-  <ui-gmap-marker
-    idKey='data.marker.idKey'
-    coords="data.marker.coords"
-    options="data.marker.options"
-          >
-          <!-- idKey='{expression}'
-          coords='{expression}'
-          click='{expression}'
-          options='{expression}'
-          events='{expression}'
-          control='{expression}' -->
-  </ui-gmap-marker>
+<div class="card padding" style="height: 70%;">
+  <ui-gmap-google-map
+    class=""
+    center='map.center'
+    zoom='map.zoom'
+    options="map.options"
+    styles="map.styles"
+    events="map.events">
 
-</ui-gmap-google-map>
+    <ui-gmap-marker
+      idKey='data.marker.idKey'
+      coords="data.marker.coords"
+      options="data.marker.options"
+            >
+            <!-- idKey='{expression}'
+            coords='{expression}'
+            click='{expression}'
+            options='{expression}'
+            events='{expression}'
+            control='{expression}' -->
+    </ui-gmap-marker>
+
+  </ui-gmap-google-map>
+</div>
 
 
 

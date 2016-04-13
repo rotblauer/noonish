@@ -1,19 +1,41 @@
-<ion-view view-name="tabs-solarevents" view-title="{{ data.string }}">
+<ion-view view-name="tabs-solarevents" view-title="{{ data.string }}" hide-nav-bar="true">
 
   <!-- do you want padding? -->
   <ion-content class="padding">
 
-    <h2>
-      {{ data.inUseLocation.address }}
+    <div class="item item-icon-left item-no-border">
 
-    </h2>
+      <i class="icon ion-ios-location type "
+          ng-class="{'type-assertive' : data.inUseLocation.timezone.data.timeZoneName, 'type-muted' : !data.inUseLocation.timezone.data.timeZoneName}"></i>
 
-    <p class="type type-muted">Times by <strong>your</strong> local clock
-    <span class="type type-positive">
-      <i class="icon ion-ios-clock"></i>
-      {{ dateData | date:"HH:mm:ss" }}
-    </span>
-    </p>
+      <p class="type type-positive" >
+        <span class="type type-muted">Latitude </span>
+        <!-- &nbsp;<i class="icon ion-android-more-horizontal type type-muted"></i>&nbsp; -->
+        {{ data.currentLocation.coords.latitude | number:4 }}
+        &nbsp;
+        <span class="type type-muted">Longitude </span>
+        <!-- &nbsp;<i class="icon ion-android-more-vertical type type-muted"></i>&nbsp; -->
+        {{ data.currentLocation.coords.longitude | number:4 }}
+
+      </p>
+
+
+      <p class="type type-positive">
+        <span class="type type-muted">@</span>
+        &nbsp;{{ data.inUseLocation.address }}
+      </p>
+
+      <p class="type type-positive">
+        <span class="type type-muted">Timezone</span>
+        &nbsp;{{ data.inUseLocation.timezone.data.timeZoneName || 'Unavailable'}}
+      </p>
+
+      <p class="type type-assertive" ng-if="error">
+        Error: {{ error }}
+      </p>
+    </div>
+
+
     <!-- view -->
 <!--     <timeline>
       <timeline-event ng-repeat="event in events" side="right">
@@ -29,11 +51,19 @@
       </timeline-event>
     </timeline> -->
 
-    <div class="list">
+    <div class="list ">
+
+
+      <p class="type type-muted" style="float:right; margin-right: 15px;">Times by <strong>your</strong> local clock
+      <span class="type type-positive">
+        <i class="icon ion-ios-clock"></i>
+        {{ dateData | date:"HH:mm:ss" }}
+      </span>
+      </p>
 
       <div class="item item-icon-left" style="border-left: 3px solid gold;">
         <i class="icon ion-arrow-up-c"></i>
-        Nautical Dawn
+        Nautical dawn
         <span class="item-note">
           {{ sunE.nauticalDawn | date:"HH:mm:ss " }}
         </span>
@@ -95,7 +125,7 @@
         </span>
       </div>
 
-      <div class="item item-icon-left" style="border-left: 15px solid darkblue;">
+      <div class="item item-icon-left" style="border-left: 12px solid darkblue;">
         <i class="icon ion-ios-moon"></i>
         Nadir
         <span class="item-note">
@@ -103,7 +133,7 @@
         </span>
       </div>
 
-      <div class="item item-icon-left" style="border-left: 5px solid lightblue;">
+      <div class="item item-icon-left" style="border-left: 5px solid darkblue;">
         <i class="icon ion-arrow-down-c"></i>
         Night ends
         <span class="item-note">
