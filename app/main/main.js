@@ -10,7 +10,7 @@ angular.module('main', [
 .config(function ($stateProvider, $urlRouterProvider) {
 
   // ROUTING with ui.router
-  $urlRouterProvider.otherwise('/main/solarEvents');
+  $urlRouterProvider.otherwise('/main/times');
   $stateProvider
     // this state is placed in the <ion-nav-view> in the index.html
     .state('main', {
