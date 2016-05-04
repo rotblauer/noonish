@@ -6,6 +6,7 @@ angular.module('main')
 .controller('TimesCtrl', function ($scope, $log, $timeout, $q, currentLocation, TimeFactory, RiserFactory, GeolocationFactory) {
 
   $scope.data = {};
+  $scope.data.testes = 'asdfasdf';
   $scope.data.inUseLocation = GeolocationFactory.inUseLocation;
   $scope.data.location = GeolocationFactory.inUseLocation.location;
 
@@ -47,7 +48,8 @@ angular.module('main')
     var date = updateDate();
     var JD = RiserFactory.getJD(date.day, date.month, date.year); // day, month, year
     var T = RiserFactory.calcTimeJulianCent(JD); // The units? No idea.
-    $scope.data.EOT = parseFloat(RiserFactory.calcEquationOfTime(T)); // in minutes
+    // $scope.data.EOT = parseFloat(RiserFactory.calcEquationOfTime(T)); // in minutes
+    $scope.data.EOT = TimeFactory.equationOfTime() / 60.0000000000000;
     //\\
     // $log.log('$scope.data.EOT',$scope.data.EOT);
     $scope.data.presentableEOT = RiserFactory.betterTimeString($scope.data.EOT * 60);

@@ -5,6 +5,8 @@
 angular.module('main')
 .controller('TimerCtrl', function ($scope, $log, $timeout, $cordovaGeolocation, MAPSTYLE, TimeFactory, RiserFactory, GeolocationFactory) {
 
+    $log.log('I exist');
+    $scope.stuff = "teasdfa";
     // Initialize variables.
     $scope.position = {}; // will init to current, then can be changed to query
     $scope.map;
@@ -71,8 +73,9 @@ angular.module('main')
       $log.info('$scope.calcTimeJulianCent', $scope.calcTimeJulianCent);
 
       // Time Factory EOT
-      $scope.TFEOT                      = TimeFactory.equationOfTime() / 60.0000;
 
+      $scope.TFEOT                      = TimeFactory.equationOfTime() / 60.0000;
+      $log.log('$scope.TFEOT', $scope.TFEOT);
 
       //
       $scope.calcEquationOfTimeJD       = RiserFactory.calcEquationOfTime($scope.JD); //calcTimeJulianCent

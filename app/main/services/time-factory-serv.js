@@ -91,7 +91,7 @@ angular.module('main')
     // var diff = now - start;
     // var oneDay = 1000 * 60 * 60 * 24;
     // Cardinal day.
-    var DDaze = cardinalDayWithFraction(); // <-- moved to helper ^ // cardinalDay
+    var DDaze = cardinalDay(); // cardinalDayWithFraction(); // <-- moved to helper ^ // cardinalDay
 
     // A is the angle the earth would move on its orbit at its average speed from the December solstice to date D.
     // A = W*(D+10)
@@ -129,6 +129,7 @@ angular.module('main')
     var cRounder = Math.round(cDog);
     var datEOT = 720 * (cDog - cRounder); // < --  minutes
     var datEOTSeconds = datEOT * 60; // <--  seconds (-350.428...)
+    // $log.log('datEOTSeconds', datEOTSeconds);
     return datEOTSeconds;
   }
 
@@ -175,7 +176,7 @@ angular.module('main')
     var meanEpoc
         , daDiffMeanClock
         , daDiffTrueClock
-        , eotOffset = eotOffset * 60; // cuz it's their an in fractions of a minute; ours is in seconds
+        , eotOffset = eotOffset * -60; // cuz it's their an in fractions of a minute; ours is in seconds
 
     // $log.log('eotOffset', eotOffset);
     // $log.log('eotOffset * 60', eotOffset * 60);
